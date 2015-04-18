@@ -118,7 +118,7 @@ void VCCLCompilerTool::make_AdditionalOptions()
 
     if ( option_value.find( "/Zm" ) == std::string::npos )
     {
-        option_value += " Zm1000";
+        option_value += " /Zm1000";
         m_is_changed = true;
         std::cout << "AdditionalOptions: + /Zm1000" << std::endl;
     }

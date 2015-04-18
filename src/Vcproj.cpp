@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Vcproj.h"
 #include "VCCLCompilerTool.h"
+#include "VCPreBuildEventTool.h"
 
 
 Vcproj::Vcproj( const path& p, const std::string& configuration_type )
@@ -14,7 +15,10 @@ Vcproj::Vcproj( const path& p, const std::string& configuration_type )
 
     //extract_files();
     //extract_additional_include_directories();
-    extract_VCCLCompilerTool();
+    //extract_VCCLCompilerTool();
+    //extract_VCPreBuildEventTool();
+
+    make_preferred_path();
 }
 
 
@@ -192,12 +196,88 @@ void Vcproj::extract_VCCLCompilerTool()
 }
 
 
+void Vcproj::extract_VCPreBuildEventTool()
+{
+    if ( m_str.empty() )
+    {
+        return;
+    }
+
+    std::stringstream configuration_regex_strm;
+    configuration_regex_strm
+        << "(?x)"
+        << "<Configuration \\s+"
+        << "    Name=\"" << m_configuration_type << "\\|Win32\""
+        << "    .+?"
+        << "    ( <Tool \\s+ Name=\"VCPreBuildEventTool\" .+? /> )"
+        << "    .+?"
+        << "</Configuration>"
+        ;
+    static const boost::regex e( configuration_regex_strm.str() );
+    boost::smatch m;
+
+    if ( boost::regex_search( m_str, m, e ) )
+    {
+        m_VCPreBuildEventTool = m.str(1);
+        //std::cout << m.position(1) << std::endl;
+        //std::cout << m_str.substr( m.position(1), m.length(1) ) << std::endl;
+        //std::string::difference_type pos = m.position(0);
+        //<< m.position(0) << std::endl;
+        //std::cout << m_str.substr( 0, m.length(1) ) << std::endl;
+        std::cout << m_VCPreBuildEventTool << std::endl;
+        VCPreBuildEventTool tool( this, m_str, m_VCPreBuildEventTool, m.position(1) );
+        //std::cout << tool.make_tool() << std::endl;
+        tool.make_CommandLine();
+        tool.save_tool();
+
+        if ( tool.m_is_changed )
+        {
+            save();
+        }
+    }
+}
+
+
 void Vcproj::save()
 {
     std::ofstream ofs( m_path.string().c_str() );
 
-    if ( ofs )
+    if ( !ofs )
     {
-        ofs << m_str;
+        std::cout << "cannot open file " << m_path.string() << std::endl;
+        return;
+    }
+
+    ofs << m_str;
+}
+
+
+void Vcproj::make_preferred_path()
+{
+    boost::regex e
+    (
+        "(?x)"
+        "(OutputDirectory|IntermediateDirectory|InheritedPropertySheets|AdditionalIncludeDirectories|PrecompiledHeaderFile|AssemblerListingLocation|ObjectFile|ProgramDataBaseFileName|OutputFile)"
+        "=\" ([^\"]+) \""
+    );
+
+    bool is_changed = false;
+    boost::sregex_iterator it( m_str.begin(), m_str.end(), e );
+    boost::sregex_iterator end;
+
+    for ( ; it != end; ++it )
+    {
+        size_t beg = it->position(2);
+        size_t cnt = it->length(2);
+        char* p = const_cast<char*>( m_str.c_str() ) + beg;
+
+        for ( size_t i = 0; i < cnt; ++i, ++p )
+        {
+            if ( *p == '/' )
+            {
+                *p = '\\';
+                is_changed = true;
+            }
+        }
     }
 }

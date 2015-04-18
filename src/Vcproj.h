@@ -17,6 +17,9 @@ private:
     void extract_files();
     void extract_additional_include_directories();
     void extract_VCCLCompilerTool();
+    void extract_VCPreBuildEventTool();
+
+    void make_preferred_path();
 
     static std::string get_string_from_file( const std::string& file_path );
 
@@ -31,4 +34,5 @@ public:
     std::string m_configuration_type;
 
     std::string m_VCCLCompilerTool;
+    std::string m_VCPreBuildEventTool;
 };

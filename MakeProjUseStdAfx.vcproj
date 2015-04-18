@@ -206,6 +206,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\VCPreBuildEventTool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VCPreBuildEventTool.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Vcproj.cpp"
 				>
 			</File>
