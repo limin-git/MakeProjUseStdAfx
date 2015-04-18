@@ -198,6 +198,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Tool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Tool.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\VCCLCompilerTool.cpp"
 				>
 			</File>

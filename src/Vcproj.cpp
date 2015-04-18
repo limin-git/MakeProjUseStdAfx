@@ -14,10 +14,9 @@ Vcproj::Vcproj( const path& p, const std::string& configuration_type )
     //std::cout << m_current_path.string() << std::endl;
 
     //extract_files();
-    //extract_additional_include_directories();
-    //extract_VCCLCompilerTool();
-    //extract_VCPreBuildEventTool();
-
+    extract_additional_include_directories();
+    extract_VCCLCompilerTool();
+    extract_VCPreBuildEventTool();
     make_preferred_path();
 }
 
@@ -173,14 +172,7 @@ void Vcproj::extract_VCCLCompilerTool()
     if ( boost::regex_search( m_str, m, e ) )
     {
         m_VCCLCompilerTool = m.str(1);
-        //std::cout << m.position(1) << std::endl;
-        //std::cout << m_str.substr( m.position(1), m.length(1) ) << std::endl;
-        //std::string::difference_type pos = m.position(0);
-        //<< m.position(0) << std::endl;
-        //std::cout << m_str.substr( 0, m.length(1) ) << std::endl;
-        //std::cout << m_VCCLCompilerTool << std::endl;
-        VCCLCompilerTool tool( this, m_str, m_VCCLCompilerTool, m.position(1) );
-        //std::cout << tool.make_tool() << std::endl;
+        VCCLCompilerTool tool( this, m_VCCLCompilerTool, m.position(1) );
         tool.make_PreprocessorDefinitions();
         tool.make_AdditionalOptions();
         tool.make_AdditionalIncludeDirectories();
@@ -188,7 +180,7 @@ void Vcproj::extract_VCCLCompilerTool()
         tool.make_UsePrecompiledHeader();
         tool.save_tool();
 
-        if ( tool.m_is_changed )
+        if ( tool.m_changed )
         {
             save();
         }
@@ -219,18 +211,11 @@ void Vcproj::extract_VCPreBuildEventTool()
     if ( boost::regex_search( m_str, m, e ) )
     {
         m_VCPreBuildEventTool = m.str(1);
-        //std::cout << m.position(1) << std::endl;
-        //std::cout << m_str.substr( m.position(1), m.length(1) ) << std::endl;
-        //std::string::difference_type pos = m.position(0);
-        //<< m.position(0) << std::endl;
-        //std::cout << m_str.substr( 0, m.length(1) ) << std::endl;
-        std::cout << m_VCPreBuildEventTool << std::endl;
-        VCPreBuildEventTool tool( this, m_str, m_VCPreBuildEventTool, m.position(1) );
-        //std::cout << tool.make_tool() << std::endl;
+        VCPreBuildEventTool tool( this, m_VCPreBuildEventTool, m.position(1) );
         tool.make_CommandLine();
         tool.save_tool();
 
-        if ( tool.m_is_changed )
+        if ( tool.m_changed )
         {
             save();
         }
@@ -279,5 +264,10 @@ void Vcproj::make_preferred_path()
                 is_changed = true;
             }
         }
+    }
+
+    if ( is_changed )
+    {
+        save();
     }
 }
