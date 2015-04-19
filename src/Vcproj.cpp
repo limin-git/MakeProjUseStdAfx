@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Vcproj.h"
+#include "Utility.h"
 #include "VCCLCompilerTool.h"
 #include "VCPreBuildEventTool.h"
 
@@ -10,27 +11,22 @@ Vcproj::Vcproj( const path& p, const std::string& configuration_type )
 {
     std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
-    m_str = get_string_from_file( m_path.string() );
-    //std::cout << m_current_path.string() << std::endl;
+    m_str = Utility::get_string_from_file( m_path.string() );
 
-    //extract_files();
+    extract_files();
     extract_additional_include_directories();
-    extract_VCCLCompilerTool();
-    extract_VCPreBuildEventTool();
-    make_preferred_path();
 }
 
 
-std::string Vcproj::get_string_from_file( const std::string& file_path )
+void Vcproj::make_project()
 {
-    std::ifstream ifs( file_path.c_str() );
+    // project
+    make_preferred_path();
+    make_VCCLCompilerTool();
+    make_VCPreBuildEventTool();
 
-    if ( ifs )
-    {
-        return std::string( std::istreambuf_iterator< char >( ifs ), ( std::istreambuf_iterator< char >() ) );
-    }
-
-    return "";
+    // files
+    add_include_StdAfx_for_cpps();
 }
 
 
@@ -50,16 +46,6 @@ void Vcproj::extract_files()
         "    ( .*? ) \\s+ "                           //$2, configurations
         "</File>"
     );
-
-    static const boost::regex file_configuration_regex
-    (
-        "(?x)"
-        "<FileConfiguration \\s+"
-        "Name= \" ( .+? )  \" \\s+"                 //$1, Name
-        "ExcludedFromBuild= \" ( .+? ) \" \\s+ "    //$2, ExcludedFromBuild
-        ">"
-    );
-
     boost::sregex_iterator it( m_str.begin(), m_str.end(), file_regex );
     boost::sregex_iterator end;
 
@@ -67,23 +53,32 @@ void Vcproj::extract_files()
     {
         path source_file_relative_path = it->str(1);
         std::string configurations = it->str(2);
-
         bool is_excluded = false;
+
+        if ( ! boost::ends_with( it->str(1), "cpp" )  )
+        {
+            continue;
+        }
 
         if ( false == configurations.empty() )
         {
-            boost::sregex_iterator fc_it( configurations.begin(), configurations.end(), file_configuration_regex );
+            static const boost::regex file_configuration_regex
+            (
+                "(?x)"
+                "<FileConfiguration \\s+"
+                "    Name= \" ( .+? )  \" \\s+"                 //$1, Name
+                "    ExcludedFromBuild= \" ( .+? ) \" \\s+ "    //$2, ExcludedFromBuild
+                ">"
+            );
+            boost::sregex_iterator it( configurations.begin(), configurations.end(), file_configuration_regex );
             boost::sregex_iterator end;
 
-            for ( ; fc_it != end; ++fc_it )
+            for ( ; it != end; ++it )
             {
-                std::string file_configuration_name = fc_it->str(1);
-                std::string excluded_form_build = fc_it->str(2);
+                std::string file_configuration_name = it->str(1);
+                std::string excluded_form_build = it->str(2);
 
-                std::stringstream match_strm;
-                match_strm << m_configuration_type << "|Win32";
-
-                if ( file_configuration_name == match_strm.str() )
+                if ( file_configuration_name.find( m_configuration_type ) != std::string::npos )
                 {
                     if ( "true" == excluded_form_build )
                     {
@@ -98,12 +93,8 @@ void Vcproj::extract_files()
         if ( false == is_excluded )
         {
             path p = boost::filesystem::system_complete( m_current_path / source_file_relative_path  );
-
-            if ( boost::ends_with( p.string(), "cpp" ) )
-            {
-                //std::cout << p.string() << std::endl;
-                m_files.push_back( p );
-            }
+            m_files.push_back( p );
+            //std::cout << p.string() << std::endl;
         }
     }
 }
@@ -149,7 +140,7 @@ void Vcproj::extract_additional_include_directories()
 }
 
 
-void Vcproj::extract_VCCLCompilerTool()
+void Vcproj::make_VCCLCompilerTool()
 {
     if ( m_str.empty() )
     {
@@ -171,8 +162,7 @@ void Vcproj::extract_VCCLCompilerTool()
 
     if ( boost::regex_search( m_str, m, e ) )
     {
-        m_VCCLCompilerTool = m.str(1);
-        VCCLCompilerTool tool( this, m_VCCLCompilerTool, m.position(1) );
+        VCCLCompilerTool tool( this, m.str(1), m.position(1) );
         tool.make_PreprocessorDefinitions();
         tool.make_AdditionalOptions();
         tool.make_AdditionalIncludeDirectories();
@@ -180,15 +170,19 @@ void Vcproj::extract_VCCLCompilerTool()
         tool.make_UsePrecompiledHeader();
         tool.save_tool();
 
-        if ( tool.m_changed )
+        if ( tool.is_changed() )
         {
             save();
         }
     }
+    else
+    {
+        std::cout << "cannot find Tool with name of VCCLCompilerTool" << std::endl;
+    }
 }
 
 
-void Vcproj::extract_VCPreBuildEventTool()
+void Vcproj::make_VCPreBuildEventTool()
 {
     if ( m_str.empty() )
     {
@@ -210,30 +204,25 @@ void Vcproj::extract_VCPreBuildEventTool()
 
     if ( boost::regex_search( m_str, m, e ) )
     {
-        m_VCPreBuildEventTool = m.str(1);
-        VCPreBuildEventTool tool( this, m_VCPreBuildEventTool, m.position(1) );
+        VCPreBuildEventTool tool( this, m.str(1), m.position(1) );
         tool.make_CommandLine();
         tool.save_tool();
 
-        if ( tool.m_changed )
+        if ( tool.is_changed() )
         {
             save();
         }
+    }
+    else
+    {
+        std::cout << "cannot find Tool with name of VCPreBuildEventTool" << std::endl;
     }
 }
 
 
 void Vcproj::save()
 {
-    std::ofstream ofs( m_path.string().c_str() );
-
-    if ( !ofs )
-    {
-        std::cout << "cannot open file " << m_path.string() << std::endl;
-        return;
-    }
-
-    ofs << m_str;
+    Utility::write_string_to_file( m_str, m_path.string() );
 }
 
 
@@ -242,8 +231,13 @@ void Vcproj::make_preferred_path()
     boost::regex e
     (
         "(?x)"
-        "(OutputDirectory|IntermediateDirectory|InheritedPropertySheets|AdditionalIncludeDirectories|PrecompiledHeaderFile|AssemblerListingLocation|ObjectFile|ProgramDataBaseFileName|OutputFile)"
-        "=\" ([^\"]+) \""
+        "("
+        "    OutputDirectory|IntermediateDirectory|InheritedPropertySheets|" // Configuration
+        "    AdditionalIncludeDirectories|PrecompiledHeaderFile|AssemblerListingLocation|ObjectFile|ProgramDataBaseFileName|" // Tool - VCCLCompilerTool
+        "    OutputFile|" //Tool - VCLibrarianTool|VCLinkerTool|VCBscMakeTool
+        "    AdditionalLibraryDirectories" // Tool - VCLinkerTool
+        ")"
+        "=\" ([^\"]+) \"" // paths
     );
 
     bool is_changed = false;
@@ -269,5 +263,34 @@ void Vcproj::make_preferred_path()
     if ( is_changed )
     {
         save();
+    }
+}
+
+
+void Vcproj::add_include_StdAfx_for_cpps()
+{
+    const char* include_stdafx_h = "#include \"StdAfx.h\"\n";
+
+    for ( size_t i = 0; i < m_files.size(); ++i )
+    {
+        path& p = m_files[i];
+        std::string str = Utility::get_string_from_file( p.string() );
+
+        if ( boost::regex_search( str, boost::regex( "(?xi) \\#include \\s+ \"StdAfx\\.h\"" ) ) )
+        {
+            continue;
+        }
+
+        boost::smatch m;
+        
+        if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* \\# " ) ) )
+        {
+            std::cout << "cannot add include StdAfx for this file: " << p.string() << std::endl;
+            continue;
+        }
+
+        str.insert( m.position(), include_stdafx_h );
+        Utility::write_string_to_file( str, p.string() );
+        std::cout << "add #include \"StdAfx.h\" for " << p.string() << std::endl;
     }
 }

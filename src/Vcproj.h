@@ -10,18 +10,20 @@ public:
 
     Vcproj( const path& p, const std::string& configuration_type = "Debug" );
 
-    void save();
+    void make_project();
 
 private:
 
     void extract_files();
     void extract_additional_include_directories();
-    void extract_VCCLCompilerTool();
-    void extract_VCPreBuildEventTool();
+    void make_VCCLCompilerTool();
+    void make_VCPreBuildEventTool();
 
     void make_preferred_path();
 
-    static std::string get_string_from_file( const std::string& file_path );
+    void add_include_StdAfx_for_cpps();
+
+    void save();
 
 
 public:

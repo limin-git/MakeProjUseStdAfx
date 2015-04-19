@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Solution.h"
 #include "Vcproj.h"
+#include "Utility.h"
 
 
 Solution::Solution( const path& p )
@@ -8,23 +9,19 @@ Solution::Solution( const path& p )
 {
     std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
-    m_str = get_string_from_file( m_path.string() );
-    //std::cout << m_current_path.string() << std::endl;
+    m_str = Utility::get_string_from_file( m_path.string() );
 
     extract_projects();
 }
 
 
-std::string Solution::get_string_from_file( const std::string& file_path )
+void Solution::make_solution()
 {
-    std::ifstream ifs( file_path.c_str() );
-
-    if ( ifs )
+    for ( size_t i = 0; i < m_projects.size(); ++i )
     {
-        return std::string( std::istreambuf_iterator< char >( ifs ), ( std::istreambuf_iterator< char >() ) );
+        Vcproj p( m_projects[i] );
+        p.make_project();
     }
-
-    return "";
 }
 
 
@@ -57,7 +54,7 @@ void Solution::extract_projects()
     {
         path project_relative_path = it->str(4);
         path p = boost::filesystem::system_complete( m_current_path / project_relative_path );
-        std::cout << p.string() << std::endl;
+        //std::cout << p.string() << std::endl;
         m_projects.push_back( p );
     }
 }

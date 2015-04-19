@@ -60,6 +60,20 @@ Option& Tool::find_option( const std::string& option_name )
 }
 
 
+bool Tool::is_option_exist( const std::string& option_name )
+{
+    for ( OptionList::iterator it = m_options.begin(); it != m_options.end(); ++it )
+    {
+        if ( it->first == option_name )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 std::string Tool::make_tool()
 {
     std::stringstream strm;
@@ -75,5 +89,51 @@ void Tool::save_tool()
     if ( m_changed )
     {
         m_project->m_str.replace( m_pos, m_str.size(), make_tool() );
+    }
+}
+
+
+void Tool::modify_option( const std::string& option_name, const std::string& option_value )
+{
+    Option& option = find_option( option_name );
+
+    if ( option.first.empty() )
+    {
+        std::cout << "cannot modify option " << option_name << std::endl;
+        return;
+    }
+
+    if ( option.second != option_value )
+    {
+        option.second = option_value;
+        m_changed = true;
+        std::cout << option_name << ": +- " << option_value << std::endl;
+    }
+}
+
+
+void Tool::insert_option( const std::string& option_name, const std::string& option_value, ops_type pos, const std::string& option )
+{
+    if ( false == find_option( option_name ).first.empty() )
+    {
+        std::cout << option_name << " already exist." << std::endl;
+        return;
+    }
+
+    for ( OptionList::iterator it = m_options.begin(); it != m_options.end(); ++it )
+    {
+        if ( it->first == option )
+        {
+            if ( BEFORE == pos )
+            {
+                m_options.insert( it, std::make_pair(option_name, option_value) );
+            }
+            else
+            {
+                m_options.insert( ++it, std::make_pair(option_name, option_value) );
+            }
+
+            std::cout << "+ " << option_name << ": " << option_value << std::endl;
+        }
     }
 }

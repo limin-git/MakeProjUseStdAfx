@@ -16,4 +16,5 @@ public:
     void make_AdditionalIncludeDirectories();
     void make_PrecompiledHeaderFile();
     void make_UsePrecompiledHeader();
+    void make_WarningLevel();
 };

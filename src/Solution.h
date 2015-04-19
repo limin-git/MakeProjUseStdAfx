@@ -11,11 +11,11 @@ public:
 
     Solution( const path& p );
 
+    void make_solution();
+
 private:
 
     void extract_projects();
-
-    static std::string get_string_from_file( const std::string& file_path );
 
 public:
 

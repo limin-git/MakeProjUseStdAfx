@@ -206,6 +206,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Utility.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Utility.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\VCCLCompilerTool.cpp"
 				>
 			</File>
