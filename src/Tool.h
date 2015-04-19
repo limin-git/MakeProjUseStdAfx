@@ -16,8 +16,12 @@ public:
 
 public:
 
+    virtual void make_tool() = 0;
+
+public:
+
     Tool( Vcproj* project, const std::string& str, size_t pos );
-    std::string make_tool();
+    std::string generate_tool_string();
     void save_tool();
     Option& find_option( const std::string& option_name );
     bool is_option_exist( const std::string& option_name );

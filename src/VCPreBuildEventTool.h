@@ -11,5 +11,7 @@ public:
     {
     }
 
+    virtual void make_tool();
+
     void make_CommandLine();
 };

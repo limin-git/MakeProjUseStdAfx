@@ -74,7 +74,7 @@ bool Tool::is_option_exist( const std::string& option_name )
 }
 
 
-std::string Tool::make_tool()
+std::string Tool::generate_tool_string()
 {
     std::stringstream strm;
     strm << "<Tool" << std::endl;
@@ -88,7 +88,7 @@ void Tool::save_tool()
 {
     if ( m_changed )
     {
-        m_project->m_str.replace( m_pos, m_str.size(), make_tool() );
+        m_project->m_str.replace( m_pos, m_str.size(), generate_tool_string() );
     }
 }
 
@@ -135,8 +135,14 @@ void Tool::insert_option( const std::string& option_name, const std::string& opt
 
             m_changed = true;
             std::cout << "+ " << option_name << ": " << option_value << std::endl;
+            return;
         }
     }
+
+    std::cout << "cannot insert option " << option_name << " with value " << option_value << ( AFTER == pos ? " after " : " before ") << " option " << option << std::endl;
+    m_options.push_back( std::make_pair(option_name, option_value) );
+    m_changed = true;
+    std::cout << "+ " << option_name << ": " << option_value << std::endl;
 }
 
 
@@ -146,9 +152,9 @@ void Tool::remove_option( const std::string& option_name )
     {
         if ( it->first == option_name )
         {
+            std::cout << "- " << option_name << ": " << it->second << std::endl;
             m_options.erase( it );
             m_changed = true;
-            std::cout << "- " << option_name << ": " << it->second << std::endl;
             return;
         }
     }

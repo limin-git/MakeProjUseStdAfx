@@ -3,6 +3,20 @@
 #include "Vcproj.h"
 
 
+void VCCLCompilerTool::make_tool()
+{
+   make_PreprocessorDefinitions();
+   make_AdditionalOptions();
+   make_AdditionalIncludeDirectories();
+   make_PrecompiledHeaderFile();
+   make_UsePrecompiledHeader();
+   make_WarningLevel();
+   make_BrowseInformation();
+   make_MinimalRebuild();
+   save_tool();
+}
+
+
 void VCCLCompilerTool::make_PreprocessorDefinitions()
 {
     static const char* preprocessors[] =
@@ -167,13 +181,16 @@ void VCCLCompilerTool::make_PrecompiledHeaderFile()
     {
         if ( boost::filesystem::exists( current_path / stdafx_path ) )
         {
+            std::string option_value = stdafx_path.string();
+            boost::replace_first( option_value, m_project->m_configuration_name, "$(ConfigurationName)" );
+
             if ( Tool::is_option_exist( option_name ) )
             {
-                Tool::modify_option( option_name, stdafx_path.string() );
+                Tool::modify_option( option_name, option_value );
             }
             else
             {
-                Tool::insert_option( option_name, stdafx_path.string(), Tool::BEFORE, "AssemblerListingLocation" );
+                Tool::insert_option( option_name, option_value, Tool::BEFORE, "AssemblerListingLocation" );
             }
 
             return;
@@ -222,4 +239,20 @@ void VCCLCompilerTool::make_BrowseInformation()
 {
     const std::string option_name = "BrowseInformation";
     Tool::remove_option( option_name );
+}
+
+
+void VCCLCompilerTool::make_MinimalRebuild()
+{
+    const std::string option_name = "MinimalRebuild";
+    const std::string option_value = "true";
+
+    if ( false == Tool::is_option_exist( option_name ) )
+    {
+        Tool::insert_option( option_name, option_value, Tool::AFTER, "PreprocessorDefinitions" );
+    }
+    else
+    {
+        Tool::modify_option( option_name, option_value );
+    }
 }

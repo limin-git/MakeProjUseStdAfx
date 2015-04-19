@@ -3,6 +3,13 @@
 #include "Vcproj.h"
 
 
+void VCPreBuildEventTool::make_tool()
+{
+    make_CommandLine();
+    save_tool();
+}
+
+
 void VCPreBuildEventTool::make_CommandLine()
 {
     const char* enter_line = "&#x0D;&#x0A;";
@@ -43,12 +50,7 @@ void VCPreBuildEventTool::make_CommandLine()
     }
 
     std::stringstream strm;
-    strm 
-        << "IF EXIST $(IntDir)\\vc90.pdb DEL /Q /F $(IntDir)\\vc90.pdb" << enter_line
-        << "IF EXIST $(IntDir)\\vc90.idb DEL /Q /F $(IntDir)\\vc90.idb" <<enter_line
-        << "MKLINK /H $(IntDir)\\vc90.pdb " << stdafx_relative_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.pdb" << enter_line
-        << "MKLINK /H $(IntDir)\\vc90.idb " << stdafx_relative_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.idb" << enter_line
-        ;
+    strm << "COPY /Y " << stdafx_relative_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.?db $(IntDir)" << enter_line;
 
     if ( option.first.empty() )
     {

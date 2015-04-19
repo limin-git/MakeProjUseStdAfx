@@ -11,6 +11,8 @@ public:
     {
     }
 
+    virtual void make_tool();
+
     void make_PreprocessorDefinitions();
     void make_AdditionalOptions();
     void make_AdditionalIncludeDirectories();
@@ -18,4 +20,5 @@ public:
     void make_UsePrecompiledHeader();
     void make_WarningLevel();
     void make_BrowseInformation();
+    void make_MinimalRebuild();
 };

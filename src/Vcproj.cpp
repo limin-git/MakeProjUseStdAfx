@@ -176,12 +176,7 @@ void Vcproj::make_VCCLCompilerTool()
         {
             VCCLCompilerTool tool( this, m.str(2), m.position(2) );
 
-            tool.make_PreprocessorDefinitions();
-            tool.make_AdditionalOptions();
-            tool.make_AdditionalIncludeDirectories();
-            tool.make_PrecompiledHeaderFile();
-            tool.make_UsePrecompiledHeader();
-            tool.save_tool();
+            tool.make_tool();
 
             if ( tool.is_changed() )
             {
@@ -228,8 +223,7 @@ void Vcproj::make_VCPreBuildEventTool()
         {
             VCPreBuildEventTool tool( this, m.str(2), m.position(2) );
 
-            tool.make_CommandLine();
-            tool.save_tool();
+            tool.make_tool();
 
             if ( tool.is_changed() )
             {
@@ -237,12 +231,6 @@ void Vcproj::make_VCPreBuildEventTool()
             }
         }
     }
-}
-
-
-void Vcproj::save()
-{
-    Utility::write_string_to_file( m_str, m_path.string() );
 }
 
 
@@ -296,21 +284,42 @@ void Vcproj::add_include_StdAfx_for_cpps()
         path& p = m_files[i];
         std::string str = Utility::get_string_from_file( p.string() );
 
+        // already included
         if ( boost::regex_search( str, boost::regex( "(?xi) \\#include \\s+ \"StdAfx\\.h\"" ) ) )
         {
             continue;
         }
 
-        boost::smatch m;
-        
-        if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* (\\#|namespace) " ) ) )
+        size_t pos = std::string::npos;
+
+        if ( boost::regex_match( str, boost::regex( "\\s*" ) ) )
         {
-            std::cout << "cannot add include StdAfx for this file: " << p.string() << std::endl;
-            continue;
+            pos = 0;
+        }
+        else
+        {
+            boost::smatch m;
+
+            if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* (\\#include|\\#if|\\#define|namespace) " ) ) )
+            {
+                std::cout << "cannot add include StdAfx for this file: " << p.string() << std::endl;
+                continue;
+            }
+
+            pos = m.position();
         }
 
-        str.insert( m.position(), include_stdafx_h );
-        Utility::write_string_to_file( str, p.string() );
-        std::cout << "add #include \"StdAfx.h\" for " << p.string() << std::endl;
+        if ( pos != std::string::npos )
+        {
+            str.insert( pos, include_stdafx_h );
+            Utility::write_string_to_file( str, p.string() );
+            std::cout << "add #include \"StdAfx.h\" for " << p.string() << std::endl;
+        }
     }
+}
+
+
+void Vcproj::save()
+{
+    Utility::write_string_to_file( m_str, m_path.string() );
 }
