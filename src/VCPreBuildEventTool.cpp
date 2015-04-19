@@ -21,7 +21,7 @@ void VCPreBuildEventTool::make_CommandLine()
     }
 
     path current_path = m_project->m_current_path;
-    std::string configuration_type = m_project->m_configuration_type;
+    std::string configuration_type = m_project->m_configuration_name;
     path stdafx_relative_path = "..";
     bool is_found_path = false;
 

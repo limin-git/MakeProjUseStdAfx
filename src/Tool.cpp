@@ -133,7 +133,23 @@ void Tool::insert_option( const std::string& option_name, const std::string& opt
                 m_options.insert( ++it, std::make_pair(option_name, option_value) );
             }
 
+            m_changed = true;
             std::cout << "+ " << option_name << ": " << option_value << std::endl;
+        }
+    }
+}
+
+
+void Tool::remove_option( const std::string& option_name )
+{
+    for ( OptionList::iterator it = m_options.begin(); it != m_options.end(); ++it )
+    {
+        if ( it->first == option_name )
+        {
+            m_options.erase( it );
+            m_changed = true;
+            std::cout << "- " << option_name << ": " << it->second << std::endl;
+            return;
         }
     }
 }

@@ -5,9 +5,9 @@
 #include "VCPreBuildEventTool.h"
 
 
-Vcproj::Vcproj( const path& p, const std::string& configuration_type )
+Vcproj::Vcproj( const path& p, const std::string& configuration_name )
     : m_path( p ),
-      m_configuration_type( configuration_type )
+      m_configuration_name( configuration_name )
 {
     std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
@@ -78,7 +78,7 @@ void Vcproj::extract_files()
                 std::string file_configuration_name = it->str(1);
                 std::string excluded_form_build = it->str(2);
 
-                if ( file_configuration_name.find( m_configuration_type ) != std::string::npos )
+                if ( file_configuration_name.find( m_configuration_name ) != std::string::npos )
                 {
                     if ( "true" == excluded_form_build )
                     {
@@ -111,7 +111,7 @@ void Vcproj::extract_additional_include_directories()
     configuration_regex_strm
         << "(?x)"
         << "<Configuration \\s+"
-        << "    Name=\"" << m_configuration_type << "\\|Win32\""
+        << "    Name=\"" << m_configuration_name << "\\|Win32\""
         << "    .+?"
         << "    AdditionalIncludeDirectories=\" ([^\"]*) \""
         << "    .+?"
@@ -151,9 +151,11 @@ void Vcproj::make_VCCLCompilerTool()
     configuration_regex_strm
         << "(?x)"
         << "<Configuration \\s+"
-        << "    Name=\"" << m_configuration_type << "\\|Win32\""
+        << "    Name=\"" << m_configuration_name << "\\|Win32\""
         << "    .+?"
-        << "    ( <Tool \\s+ Name=\"VCCLCompilerTool\" .+? /> )"
+        << "    ConfigurationType=\" (\\d+) \""                     // ConfigurationType
+        << "    .+?"
+        << "    ( <Tool \\s+ Name=\"VCCLCompilerTool\" .+? /> )"    // Tool
         << "    .+?"
         << "</Configuration>"
         ;
@@ -162,22 +164,30 @@ void Vcproj::make_VCCLCompilerTool()
 
     if ( boost::regex_search( m_str, m, e ) )
     {
-        VCCLCompilerTool tool( this, m.str(1), m.position(1) );
-        tool.make_PreprocessorDefinitions();
-        tool.make_AdditionalOptions();
-        tool.make_AdditionalIncludeDirectories();
-        tool.make_PrecompiledHeaderFile();
-        tool.make_UsePrecompiledHeader();
-        tool.save_tool();
+        std::string configuration_type = m.str(1);
 
-        if ( tool.is_changed() )
+        // 0: MakeFile
+        // 1: Application (.exe)
+        // 2: Dynamic Library (.dll)
+        // 4: Static Library (.lib)
+        //10: Utility
+
+        if ( "1" == configuration_type || "2" == configuration_type || "4" == configuration_type )
         {
-            save();
+            VCCLCompilerTool tool( this, m.str(2), m.position(2) );
+
+            tool.make_PreprocessorDefinitions();
+            tool.make_AdditionalOptions();
+            tool.make_AdditionalIncludeDirectories();
+            tool.make_PrecompiledHeaderFile();
+            tool.make_UsePrecompiledHeader();
+            tool.save_tool();
+
+            if ( tool.is_changed() )
+            {
+                save();
+            }
         }
-    }
-    else
-    {
-        std::cout << "cannot find Tool with name of VCCLCompilerTool" << std::endl;
     }
 }
 
@@ -193,9 +203,11 @@ void Vcproj::make_VCPreBuildEventTool()
     configuration_regex_strm
         << "(?x)"
         << "<Configuration \\s+"
-        << "    Name=\"" << m_configuration_type << "\\|Win32\""
+        << "    Name=\"" << m_configuration_name << "\\|Win32\""
         << "    .+?"
-        << "    ( <Tool \\s+ Name=\"VCPreBuildEventTool\" .+? /> )"
+        << "    ConfigurationType=\" (\\d+) \""                     // ConfigurationType
+        << "    .+?"
+        << "    ( <Tool \\s+ Name=\"VCPreBuildEventTool\" .+? /> )" // Tool
         << "    .+?"
         << "</Configuration>"
         ;
@@ -204,18 +216,26 @@ void Vcproj::make_VCPreBuildEventTool()
 
     if ( boost::regex_search( m_str, m, e ) )
     {
-        VCPreBuildEventTool tool( this, m.str(1), m.position(1) );
-        tool.make_CommandLine();
-        tool.save_tool();
+        std::string configuration_type = m.str(1);
 
-        if ( tool.is_changed() )
+        // 0: MakeFile
+        // 1: Application (.exe)
+        // 2: Dynamic Library (.dll)
+        // 4: Static Library (.lib)
+        //10: Utility
+
+        if ( "1" == configuration_type || "2" == configuration_type || "4" == configuration_type )
         {
-            save();
+            VCPreBuildEventTool tool( this, m.str(2), m.position(2) );
+
+            tool.make_CommandLine();
+            tool.save_tool();
+
+            if ( tool.is_changed() )
+            {
+                save();
+            }
         }
-    }
-    else
-    {
-        std::cout << "cannot find Tool with name of VCPreBuildEventTool" << std::endl;
     }
 }
 
@@ -283,7 +303,7 @@ void Vcproj::add_include_StdAfx_for_cpps()
 
         boost::smatch m;
         
-        if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* \\# " ) ) )
+        if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* (\\#|namespace) " ) ) )
         {
             std::cout << "cannot add include StdAfx for this file: " << p.string() << std::endl;
             continue;

@@ -63,6 +63,12 @@ void VCCLCompilerTool::make_AdditionalOptions()
 void VCCLCompilerTool::make_AdditionalIncludeDirectories()
 {
     const std::string option_name = "AdditionalIncludeDirectories";
+
+    if ( false == Tool::is_option_exist( option_name ) )
+    {
+        Tool::insert_option( option_name, "", Tool::BEFORE, "PreprocessorDefinitions" );
+    }
+
     Option& option = find_option( option_name );
     std::string& option_value = option.second;
 
@@ -113,6 +119,7 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         ace_path.make_preferred();
         option_value += ";";
         option_value += ace_path.string();
+        m_changed = true;
         std::cout << "AdditionalIncludeDirectories: + " << ace_path.string() << std::endl;
     }
 
@@ -122,6 +129,7 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         boost_path.make_preferred();
         option_value += ";";
         option_value += boost_path.string();
+        m_changed = true;
         std::cout << "AdditionalIncludeDirectories: + " << boost_path.string() << std::endl;
     }
 
@@ -131,33 +139,43 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         omniorb_path.make_preferred();
         option_value += ";";
         option_value += omniorb_path.string();
+        m_changed = true;
         std::cout << "AdditionalIncludeDirectories: + " << omniorb_path.string() << std::endl;
     }
-
-    m_changed = true;
 }
 
 
 void VCCLCompilerTool::make_PrecompiledHeaderFile()
 {
     const std::string option_name = "PrecompiledHeaderFile";
-    Option& option = find_option( option_name );
-    std::string& option_value = option.second;
-    
-    if ( option_value.find( "TA_StdAfx.pch" ) != std::string::npos )
+
+    if ( Tool::is_option_exist( option_name ) )
     {
-        return;
+        Option& option = find_option( option_name );
+
+        if ( option.second.find( "TA_StdAfx.pch" ) != std::string::npos )
+        {
+            return;
+        }
     }
 
     path current_path = m_project->m_current_path;
     path stdafx_path;
-    stdafx_path = stdafx_path / "stdafx" / m_project->m_configuration_type / "TA_StdAfx.pch";
+    stdafx_path = stdafx_path / "stdafx" / m_project->m_configuration_name / "TA_StdAfx.pch";
 
     for ( size_t i = 0; i < 10; ++i )
     {
         if ( boost::filesystem::exists( current_path / stdafx_path ) )
         {
-            Tool::modify_option( option_name, stdafx_path.string() );
+            if ( Tool::is_option_exist( option_name ) )
+            {
+                Tool::modify_option( option_name, stdafx_path.string() );
+            }
+            else
+            {
+                Tool::insert_option( option_name, stdafx_path.string(), Tool::BEFORE, "AssemblerListingLocation" );
+            }
+
             return;
         }
 
@@ -197,4 +215,11 @@ void VCCLCompilerTool::make_WarningLevel()
     {
         modify_option( option_name,option_value );
     }
+}
+
+
+void VCCLCompilerTool::make_BrowseInformation()
+{
+    const std::string option_name = "BrowseInformation";
+    Tool::remove_option( option_name );
 }

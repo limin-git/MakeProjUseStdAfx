@@ -17,4 +17,5 @@ public:
     void make_PrecompiledHeaderFile();
     void make_UsePrecompiledHeader();
     void make_WarningLevel();
+    void make_BrowseInformation();
 };

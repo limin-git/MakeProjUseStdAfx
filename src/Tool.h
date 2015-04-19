@@ -25,6 +25,7 @@ public:
     std::ostream& output_options( std::ostream& os );
     void modify_option( const std::string& option_name, const std::string& option_value );
     void insert_option( const std::string& option_name, const std::string& option_value, ops_type pos, const std::string& option );
+    void remove_option( const std::string& option_name );
 
 public:
 
