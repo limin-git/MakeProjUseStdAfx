@@ -16,7 +16,7 @@ std::string Utility::get_string_from_file( const std::string& file_path )
 }
 
 
-bool Utility::write_string_to_file( const std::string& str, const std::string& file_path )
+bool Utility::write_string_to_file( const std::string& str, const path& file_path )
 {
     boost::filesystem::path p = file_path;
     boost::system::error_code ec;

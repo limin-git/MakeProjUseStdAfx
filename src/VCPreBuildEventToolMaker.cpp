@@ -26,6 +26,7 @@ VCPreBuildEventToolMaker::VCPreBuildEventToolMaker( VisualStudioProjectPtr proje
                 const Option& option = tool_opt_hlpr->get_option( "Name" );
                 if ( "VCPreBuildEventTool" == option.second )
                 {
+                    m_configuration = configuration;
                     m_tool = tools[i];
                     m_helper = tool_opt_hlpr;
                     return;
@@ -97,5 +98,54 @@ void VCPreBuildEventToolMaker::make_CommandLine()
     else
     {
         m_helper->modify_option( option_name, option.second + enter_line + option_value_strm.str() );
+    }
+
+    remove_vc90_pdb_idb();
+}
+
+
+void VCPreBuildEventToolMaker::remove_vc90_pdb_idb()
+{
+    const std::string option_name = "IntermediateDirectory";
+    OptionListHelperPtr helper( new OptionListHelper( &m_configuration->m_options ) );
+
+    if ( false == helper->is_option_exist( option_name ) )
+    {
+        return;
+    }
+
+    const Option& option = helper->get_option( option_name );
+
+    if ( option.second.empty() )
+    {
+        return;
+    }
+
+    path director = boost::filesystem::system_complete( m_project->m_current_path / option.second );
+    path vc90_pdb = director / "vc90.pdb";
+    path vc90_idb = director / "vc90.idb";
+
+    if ( boost::filesystem::exists( vc90_pdb ) )
+    {
+        boost::system::error_code ec;
+        permissions(vc90_pdb, all_all);
+        remove( vc90_pdb, ec);
+
+        if ( ec )
+        {
+            std::cout << "\t" << "cannot delete " << vc90_pdb.string() << ", error: " << ec.message() << std::endl;
+        }
+    }
+
+    if ( boost::filesystem::exists( vc90_idb ) )
+    {
+        boost::system::error_code ec;
+        permissions(vc90_idb, all_all);
+        remove( vc90_idb, ec);
+
+        if ( ec )
+        {
+            std::cout << "\t" << "cannot delete " << vc90_idb.string() << ", error: " << ec.message() << std::endl;
+        }
     }
 }

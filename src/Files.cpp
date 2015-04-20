@@ -31,7 +31,7 @@ Files::Files( const std::string& str )
         static const boost::regex file_regex
         (
             "(?x)"
-            "^[\t]{2} <File .+? >"
+            "^[\t]{2} <File \\b .+? >"
             ".+?"
             "^[\t]{2} </File>"
         );

@@ -5,6 +5,8 @@
 #include "VisualStudioProject.h"
 #include "VCCLCompilerToolMaker.h"
 #include "VCPreBuildEventToolMaker.h"
+#include "IncludeStdAfxMaker.h"
+#include "PreferredPathMaker.h"
 
 
 void main(int argc, char* argv[])
@@ -16,16 +18,23 @@ void main(int argc, char* argv[])
 #endif
 
 #if 1
-    std::string p = "C:\\Code\\PchBuild\\code\\transactive\\core\\alarm\\core.alarm.TA_Alarm.vcproj";
+    //std::string p = "C:\\Code\\PchBuild\\code\\transactive\\core\\alarm\\core.alarm.TA_Alarm.vcproj";
+    std::string p = "C:\\Code\\PchBuild\\code\\transactive\\core\\corba\\core.corba.TA_CorbaUtil.vcproj";
     VisualStudioProjectPtr vp( new VisualStudioProject(p) );
 
     VCCLCompilerToolMaker m1( vp );
     m1.make_all();
     VCPreBuildEventToolMaker m2( vp );
     m2.make_all();
+    IncludeStdAfxMaker m3( vp );
+    m3.make_all();
+    PreferredPathMaker m4( vp );
+    m4.make_all();
 
-    std::string out = vp->generate_visual_studio_project();
-    Utility::write_string_to_file( out, "c:\\temp\\test.txt" );
+    vp->save();
+
+    //std::string out = vp->generate_visual_studio_project();
+    //Utility::write_string_to_file( out, "c:\\temp\\test.txt" );
 
 
 

@@ -8,8 +8,9 @@ public:
 
     VisualStudioProject( const path& p );
 
-    bool is_changed();
     std::string generate_visual_studio_project();
+    bool is_changed();
+    void set_changed() { m_is_changed = true; }
     void save();
 
 public:
@@ -25,4 +26,5 @@ public:
     ReferencesPtr m_references;
     FilesPtr m_files;
     GlobalsPtr m_globals;
+    bool m_is_changed;
 };

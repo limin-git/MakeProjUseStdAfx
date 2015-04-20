@@ -34,7 +34,7 @@ Filter::Filter( const std::string& str )
             << "(?x)"
             << "^[\t]{" << tabs << "} <Filter  .+? >"
             << ".+?"
-            << "^[\t]{" << tabs << "} </Filter .+? >"
+            << "^[\t]{" << tabs << "} </Filter>"
             ;
         boost::regex filter_regex( filter_regex_strm.str() );
         boost::sregex_iterator it( m_str.begin(), m_str.end(), filter_regex );
@@ -52,9 +52,9 @@ Filter::Filter( const std::string& str )
         std::stringstream file_regex_strm;
         file_regex_strm
             << "(?x)"
-            << "^[\t]{" << tabs << "} <File  .+? >"
+            << "^[\t]{" << tabs << "} <File \\b  .+? >"
             << ".+?"
-            << "^[\t]{" << tabs << "} </File .+? >"
+            << "^[\t]{" << tabs << "} </File>"
             ;
         boost::regex file_regex( file_regex_strm.str() );
         boost::sregex_iterator it( m_str.begin(), m_str.end(), file_regex );

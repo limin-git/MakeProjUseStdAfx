@@ -242,10 +242,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\main.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Platform.cpp"
 				>
 			</File>
@@ -322,11 +318,35 @@
 			Name="maker"
 			>
 			<File
+				RelativePath=".\src\FilesHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\FilesHelper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\IncludeStdAfxMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\IncludeStdAfxMaker.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\OptionListHelper.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\OptionListHelper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\PreferredPathMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\PreferredPathMaker.h"
 				>
 			</File>
 			<File
@@ -349,6 +369,17 @@
 		<File
 			RelativePath=".\src\command_line.txt"
 			>
+		</File>
+		<File
+			RelativePath=".\src\main.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

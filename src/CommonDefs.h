@@ -35,3 +35,6 @@ typedef boost::shared_ptr<Globals> GlobalsPtr;
 
 class OptionListHelper;
 typedef boost::shared_ptr<OptionListHelper> OptionListHelperPtr;
+
+class FilesHelper;
+typedef boost::shared_ptr<FilesHelper> FilesHelperPtr;

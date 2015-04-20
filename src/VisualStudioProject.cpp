@@ -10,7 +10,8 @@
 
 
 VisualStudioProject::VisualStudioProject( const path& p )
-    : m_path( p )
+    : m_path( p ),
+      m_is_changed( false )
 {
     std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
@@ -53,7 +54,7 @@ VisualStudioProject::VisualStudioProject( const path& p )
 
 std::string VisualStudioProject::generate_visual_studio_project()
 {
-    if ( false == is_changed() )
+    if ( true == m_is_changed )
     {
         return m_str;
     }
@@ -79,5 +80,16 @@ std::string VisualStudioProject::generate_visual_studio_project()
 
 bool VisualStudioProject::is_changed()
 {
-    return m_configurations->is_changed();
+    return m_is_changed || m_configurations->is_changed();
+}
+
+
+void VisualStudioProject::save()
+{
+    if ( false == is_changed() )
+    {
+        return;
+    }
+
+    Utility::write_string_to_file( generate_visual_studio_project(), m_path );
 }
