@@ -94,7 +94,7 @@ void Vcproj::extract_files()
         {
             path p = boost::filesystem::system_complete( m_current_path / source_file_relative_path  );
             m_files.push_back( p );
-            //std::cout << p.string() << std::endl;
+            //std::cout << "\t" << p.string() << std::endl;
         }
     }
 }
@@ -123,7 +123,7 @@ void Vcproj::extract_additional_include_directories()
     if ( boost::regex_search( m_str, m, e ) )
     {
         std::string dirs = m.str(1);
-        //std::cout << dirs << std::endl;
+        //std::cout << "\t" << dirs << std::endl;
 
         typedef boost::tokenizer< boost::char_separator<char> > tokenizer;
         boost::char_separator<char> sep( ";," );
@@ -132,7 +132,7 @@ void Vcproj::extract_additional_include_directories()
         for ( tokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it )
         {
             path p(*it);
-            //std::cout << p.string() << std::endl;
+            //std::cout << "\t" << p.string() << std::endl;
             p.make_preferred();
             m_additional_include_directories.push_back( p );
         }
@@ -143,6 +143,11 @@ void Vcproj::extract_additional_include_directories()
 void Vcproj::make_VCCLCompilerTool()
 {
     if ( m_str.empty() )
+    {
+        return;
+    }
+
+    if ( false == is_files_exist() )
     {
         return;
     }
@@ -190,6 +195,11 @@ void Vcproj::make_VCCLCompilerTool()
 void Vcproj::make_VCPreBuildEventTool()
 {
     if ( m_str.empty() )
+    {
+        return;
+    }
+
+    if ( false == is_files_exist() )
     {
         return;
     }
@@ -279,6 +289,11 @@ void Vcproj::add_include_StdAfx_for_cpps()
 {
     const char* include_stdafx_h = "#include \"StdAfx.h\"\n";
 
+    if ( false == is_files_exist() )
+    {
+        return;
+    }
+
     for ( size_t i = 0; i < m_files.size(); ++i )
     {
         path& p = m_files[i];
@@ -302,7 +317,7 @@ void Vcproj::add_include_StdAfx_for_cpps()
 
             if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* (\\#include|\\#if|\\#define|namespace) " ) ) )
             {
-                std::cout << "cannot add include StdAfx for this file: " << p.string() << std::endl;
+                std::cout << "\t" << "cannot add include StdAfx for this file: " << p.string() << std::endl;
                 continue;
             }
 
@@ -313,7 +328,7 @@ void Vcproj::add_include_StdAfx_for_cpps()
         {
             str.insert( pos, include_stdafx_h );
             Utility::write_string_to_file( str, p.string() );
-            std::cout << "add #include \"StdAfx.h\" for " << p.string() << std::endl;
+            std::cout << "\t" << "+ #include \"StdAfx.h\" - " << p.string() << std::endl;
         }
     }
 }
@@ -322,4 +337,18 @@ void Vcproj::add_include_StdAfx_for_cpps()
 void Vcproj::save()
 {
     Utility::write_string_to_file( m_str, m_path.string() );
+}
+
+
+bool Vcproj::is_files_exist()
+{
+    for ( size_t i = 0; i < m_files.size(); ++i )
+    {
+        if ( false == boost::filesystem::exists( m_files[i] ) )
+        {
+            return false;
+        }
+    }
+
+    return true;
 }

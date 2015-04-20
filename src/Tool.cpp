@@ -99,7 +99,7 @@ void Tool::modify_option( const std::string& option_name, const std::string& opt
 
     if ( option.first.empty() )
     {
-        std::cout << "cannot modify option " << option_name << std::endl;
+        std::cout << "\t" << "cannot modify option " << option_name << std::endl;
         return;
     }
 
@@ -107,7 +107,7 @@ void Tool::modify_option( const std::string& option_name, const std::string& opt
     {
         option.second = option_value;
         m_changed = true;
-        std::cout << option_name << ": +- " << option_value << std::endl;
+        std::cout << "\t" << option_name << ": +- " << option_value << std::endl;
     }
 }
 
@@ -116,7 +116,7 @@ void Tool::insert_option( const std::string& option_name, const std::string& opt
 {
     if ( false == find_option( option_name ).first.empty() )
     {
-        std::cout << option_name << " already exist." << std::endl;
+        std::cout << "\t" << option_name << " already exist." << std::endl;
         return;
     }
 
@@ -134,15 +134,15 @@ void Tool::insert_option( const std::string& option_name, const std::string& opt
             }
 
             m_changed = true;
-            std::cout << "+ " << option_name << ": " << option_value << std::endl;
+            std::cout << "\t" << "+ " << option_name << ": " << option_value << std::endl;
             return;
         }
     }
 
-    std::cout << "cannot insert option " << option_name << " with value " << option_value << ( AFTER == pos ? " after " : " before ") << " option " << option << std::endl;
+    std::cout << "\t" << "cannot insert option " << option_name << " with value " << option_value << ( AFTER == pos ? " after " : " before ") << " option " << option << std::endl;
     m_options.push_back( std::make_pair(option_name, option_value) );
     m_changed = true;
-    std::cout << "+ " << option_name << ": " << option_value << std::endl;
+    std::cout << "\t" << "+ " << option_name << ": " << option_value << std::endl;
 }
 
 
@@ -152,7 +152,7 @@ void Tool::remove_option( const std::string& option_name )
     {
         if ( it->first == option_name )
         {
-            std::cout << "- " << option_name << ": " << it->second << std::endl;
+            std::cout << "\t" << "- " << option_name << ": " << it->second << std::endl;
             m_options.erase( it );
             m_changed = true;
             return;

@@ -5,7 +5,7 @@
 
 void main(int argc, char* argv[])
 {
-#if 0
+#if 1
     Solution sln( "C:\\Code\\PchBuild\\code\\tools\\build\\tools.build.Build_Base_Core.sln" );
     sln.make_solution();
     return;
@@ -23,5 +23,5 @@ void main(int argc, char* argv[])
 
     //path p = "../../;..\..\..\cots\ACE\6_0_4\ACE_wrappers;..\..\..\cots\boost\boost_1_39_0;..\..\..\cots\omniORB\omniORB_4.1.6\include";
     //p.make_preferred();
-    //std::cout << p.string() << std::endl;
+    //std::cout << "\t" << p.string() << std::endl;
 }

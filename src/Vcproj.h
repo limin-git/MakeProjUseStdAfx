@@ -22,6 +22,7 @@ private:
 
     void extract_files();
     void extract_additional_include_directories();
+    bool is_files_exist();
 
 public:
 

@@ -8,7 +8,7 @@ std::string Utility::get_string_from_file( const std::string& file_path )
 
     if ( ! ifs )
     {
-        std::cout << "cannot open file: " << file_path << std::endl;
+        std::cout << "\t" << "cannot open file: " << file_path << std::endl;
         return "";
     }
 
@@ -19,12 +19,20 @@ std::string Utility::get_string_from_file( const std::string& file_path )
 bool Utility::write_string_to_file( const std::string& str, const std::string& file_path )
 {
     boost::filesystem::path p = file_path;
-    boost::filesystem::permissions(p, boost::filesystem::all_all);
+    boost::system::error_code ec;
+    boost::filesystem::permissions(p, boost::filesystem::all_all, ec);
+
+    if ( ec )
+    {
+        std::cout << "\t" << ec.message() << "\n";
+        return false;
+    }
+
     std::ofstream ofs( file_path.c_str() );
 
     if ( ! ofs )
     {
-        std::cout << "cannot open file: " << file_path << std::endl;
+        std::cout << "\t" << "cannot open file: " << file_path << std::endl;
         return false;
     }
 

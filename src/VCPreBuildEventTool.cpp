@@ -45,29 +45,31 @@ void VCPreBuildEventTool::make_CommandLine()
 
     if ( false == is_found_path )
     {
-        std::cout << "can not find TA_StdAfx.pch" << std::endl;
+        std::cout << "\t" << "can not find TA_StdAfx.pch" << std::endl;
         return;
     }
 
     std::stringstream strm;
-    strm << "COPY /Y " << stdafx_relative_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.?db $(IntDir)" << enter_line;
-
+    strm
+        << "IF NOT EXIST $(IntDir)\\vc90.pdb COPY " << stdafx_relative_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.pdb $(IntDir)\\vc90.pdb" << enter_line
+        << "IF NOT EXIST $(IntDir)\\vc90.idb COPY " << stdafx_relative_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.idb $(IntDir)\\vc90.idb" << enter_line
+        ;
     if ( option.first.empty() )
     {
         m_options.push_back( std::make_pair( option_name, strm.str() ) );
         m_changed = true;
-        std::cout << "+ " << option_name << ": " << strm.str() << std::endl;
+        std::cout << "\t" << "+ " << option_name << ": " << strm.str() << std::endl;
     }
     else if ( option.second.empty() )
     {
         option_value = strm.str();
         m_changed = true;
-        std::cout << option_name << ": + " << strm.str() << std::endl;
+        std::cout << "\t" << option_name << ": + " << strm.str() << std::endl;
     }
     else
     {
         option_value += enter_line;
         m_changed = true;
-        std::cout << option_name << ": + " << strm.str() << std::endl;
+        std::cout << "\t" << option_name << ": + " << strm.str() << std::endl;
     }
 }

@@ -54,7 +54,7 @@ void Solution::extract_projects()
     {
         path project_relative_path = it->str(4);
         path p = boost::filesystem::system_complete( m_current_path / project_relative_path );
-        //std::cout << p.string() << std::endl;
+        //std::cout << "\t" << p.string() << std::endl;
         m_projects.push_back( p );
     }
 }

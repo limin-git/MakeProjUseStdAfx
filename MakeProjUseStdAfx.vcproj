@@ -25,7 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="IF EXIST $(ConfigurationName)\vc90.pdb DEL /Q /F $(ConfigurationName)\vc90.pdb&#x0D;&#x0A;IF EXIST $(ConfigurationName)\vc90.idb  DEL /Q /F $(ConfigurationName)\vc90.idb&#x0D;&#x0A;MKLINK /H $(ConfigurationName)\vc90.pdb ..\StdAfx\$(ConfigurationName)\vc90.pdb&#x0D;&#x0A;MKLINK /H $(ConfigurationName)\vc90.idb  ..\StdAfx\$(ConfigurationName)\vc90.idb&#x0D;&#x0A;"
+				CommandLine="IF NOT EXIST  $(ConfigurationName)\vc90.pdb MKLINK /H $(ConfigurationName)\vc90.pdb ..\StdAfx\$(ConfigurationName)\vc90.pdb&#x0D;&#x0A;IF NOT EXIST  $(ConfigurationName)\vc90.idb MKLINK /H $(ConfigurationName)\vc90.idb  ..\StdAfx\$(ConfigurationName)\vc90.idb"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -103,7 +103,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="IF EXIST $(ConfigurationName)\vc90.pdb DEL /Q /F $(ConfigurationName)\vc90.pdb&#x0D;&#x0A;IF EXIST $(ConfigurationName)\vc90.idb  DEL /Q /F $(ConfigurationName)\vc90.idb&#x0D;&#x0A;MKLINK /H $(ConfigurationName)\vc90.pdb ..\StdAfx\$(ConfigurationName)\vc90.pdb&#x0D;&#x0A;MKLINK /H $(ConfigurationName)\vc90.idb  ..\StdAfx\$(ConfigurationName)\vc90.idb&#x0D;&#x0A;"
+				CommandLine="IF NOT EXIST  $(ConfigurationName)\vc90.pdb MKLINK /H $(ConfigurationName)\vc90.pdb ..\StdAfx\$(ConfigurationName)\vc90.pdb"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

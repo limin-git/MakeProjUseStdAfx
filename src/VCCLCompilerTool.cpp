@@ -35,7 +35,7 @@ void VCCLCompilerTool::make_PreprocessorDefinitions()
         {
             option_value += ";";
             option_value += preprocessors[i];
-            std::cout << "PreprocessorDefinitions: + " << preprocessors[i] << std::endl;
+            std::cout << "\t" << "PreprocessorDefinitions: + " << preprocessors[i] << std::endl;
             m_changed = true;
         }
     }
@@ -63,13 +63,13 @@ void VCCLCompilerTool::make_AdditionalOptions()
     {
         option.second += " /Zm1000";
         m_changed = true;
-        std::cout << option_name << ": + " << option_value << std::endl;
+        std::cout << "\t" << option_name << ": + " << option_value << std::endl;
     }
     else if ( option.second.find( option_value ) == std::string::npos )
     {
         option.second = boost::regex_replace( option.second, boost::regex( "/Zm\\d+" ), option_value );
         m_changed = true;
-        std::cout << option_name << ": +- " << option_value << std::endl;
+        std::cout << "\t" << option_name << ": +- " << option_value << std::endl;
     }
 }
 
@@ -122,7 +122,7 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         }
         else
         {
-            std::cout << "can not determin cots path." << std::endl;
+            std::cout << "\t" << "can not determin cots path." << std::endl;
             return;
         }
     }
@@ -134,7 +134,7 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         option_value += ";";
         option_value += ace_path.string();
         m_changed = true;
-        std::cout << "AdditionalIncludeDirectories: + " << ace_path.string() << std::endl;
+        std::cout << "\t" << "AdditionalIncludeDirectories: + " << ace_path.string() << std::endl;
     }
 
     if ( false == is_included_boost )
@@ -144,7 +144,7 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         option_value += ";";
         option_value += boost_path.string();
         m_changed = true;
-        std::cout << "AdditionalIncludeDirectories: + " << boost_path.string() << std::endl;
+        std::cout << "\t" << "AdditionalIncludeDirectories: + " << boost_path.string() << std::endl;
     }
 
     if ( false == is_included_omniorb )
@@ -154,7 +154,7 @@ void VCCLCompilerTool::make_AdditionalIncludeDirectories()
         option_value += ";";
         option_value += omniorb_path.string();
         m_changed = true;
-        std::cout << "AdditionalIncludeDirectories: + " << omniorb_path.string() << std::endl;
+        std::cout << "\t" << "AdditionalIncludeDirectories: + " << omniorb_path.string() << std::endl;
     }
 }
 
@@ -199,7 +199,7 @@ void VCCLCompilerTool::make_PrecompiledHeaderFile()
         stdafx_path = ".." / stdafx_path;
     }
 
-    std::cout << "can not find TA_StdAfx.pch." << std::endl;
+    std::cout << "\t" << "can not find TA_StdAfx.pch." << std::endl;
 }
 
 
