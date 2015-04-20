@@ -12,7 +12,7 @@ class Tool
 {
 public:
 
-    enum ops_type { BEFORE, AFTER };
+    enum ops_type { Before, After };
 
 public:
 

@@ -8,7 +8,7 @@ Globals::Globals( const std::string& str )
 }
 
 
-std::string Globals::generate_globals()
+const std::string& Globals::generate_globals()
 {
     return m_str;
 }

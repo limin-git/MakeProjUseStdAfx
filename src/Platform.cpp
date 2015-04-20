@@ -11,7 +11,7 @@ Platform::Platform( const std::string& str )
 }
 
 
-std::string Platform::generate_platform()
+const std::string& Platform::generate_platform()
 {
     return m_str;
 }

@@ -8,7 +8,7 @@ public:
 
     Globals( const std::string& str );
 
-    std::string generate_globals();
+    const std::string& generate_globals();
     bool is_changed();
 
 public:

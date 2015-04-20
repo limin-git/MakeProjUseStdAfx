@@ -3,6 +3,8 @@
 #include "Solution.h"
 #include "Utility.h"
 #include "VisualStudioProject.h"
+#include "VCCLCompilerToolMaker.h"
+#include "VCPreBuildEventToolMaker.h"
 
 
 void main(int argc, char* argv[])
@@ -15,10 +17,19 @@ void main(int argc, char* argv[])
 
 #if 1
     std::string p = "C:\\Code\\PchBuild\\code\\transactive\\core\\alarm\\core.alarm.TA_Alarm.vcproj";
-    std::string str = Utility::get_string_from_file( p );
-    VisualStudioProject vp( str );
-    std::string out = vp.generate_visual_studio_project();
+    VisualStudioProjectPtr vp( new VisualStudioProject(p) );
+
+    VCCLCompilerToolMaker m1( vp );
+    m1.make_all();
+    VCPreBuildEventToolMaker m2( vp );
+    m2.make_all();
+
+    std::string out = vp->generate_visual_studio_project();
     Utility::write_string_to_file( out, "c:\\temp\\test.txt" );
+
+
+
+
 #endif
 
     //Vcproj p( "C:\\My Document\\Code\\C++\\MakeProjUseStdAfx\\MakeProjUseStdAfx.vcproj" );

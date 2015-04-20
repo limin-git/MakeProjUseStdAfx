@@ -8,7 +8,7 @@ References::References( const std::string& str )
 }
 
 
-std::string References::generate_references()
+const std::string& References::generate_references()
 {
     return m_str;
 }

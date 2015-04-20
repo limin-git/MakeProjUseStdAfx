@@ -49,7 +49,7 @@ Files::Files( const std::string& str )
 }
 
 
-std::string Files::generate_files()
+const std::string& Files::generate_files()
 {
     return m_str;
 }

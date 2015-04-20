@@ -6,7 +6,7 @@ class VisualStudioProject
 {
 public:
 
-    VisualStudioProject( const std::string& m_str );
+    VisualStudioProject( const path& p );
 
     bool is_changed();
     std::string generate_visual_studio_project();
@@ -15,6 +15,7 @@ public:
 public:
 
     path m_path;
+    path m_current_path;
     std::string m_str;
     std::string m_version;
     OptionList m_options;

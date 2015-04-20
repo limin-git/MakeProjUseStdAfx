@@ -8,7 +8,7 @@ public:
 
     Filter( const std::string& str );
 
-    std::string generate_filter();
+    const std::string& generate_filter();
     bool is_changed();
 
 public:

@@ -25,6 +25,11 @@ Configurations::Configurations( const std::string& str )
 
 std::string Configurations::generate_configurations()
 {
+    if ( false == is_changed() )
+    {
+        return m_str;
+    }
+
     std::stringstream strm;
     strm
         << "\t<Configurations>\n";
@@ -39,3 +44,18 @@ std::string Configurations::generate_configurations()
 
     return strm.str();
 }
+
+
+bool Configurations::is_changed()
+{
+    for ( size_t i = 0; i < m_configurations.size(); ++i )
+    {
+        if ( m_configurations[i]->is_changed() )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+

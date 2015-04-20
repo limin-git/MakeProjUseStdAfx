@@ -32,3 +32,6 @@ class FileConfiguration;
 typedef boost::shared_ptr<FileConfiguration> FileConfigurationPtr;
 class Globals;
 typedef boost::shared_ptr<Globals> GlobalsPtr;
+
+class OptionListHelper;
+typedef boost::shared_ptr<OptionListHelper> OptionListHelperPtr;

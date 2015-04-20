@@ -8,7 +8,7 @@ public:
 
     Platform( const std::string& str );
 
-    std::string generate_platform();
+    const std::string& generate_platform();
     bool is_changed();
 
 public:

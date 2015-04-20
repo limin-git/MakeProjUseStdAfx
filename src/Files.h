@@ -8,7 +8,7 @@ public:
 
     Files( const std::string& str );
 
-    std::string generate_files();
+    const std::string& generate_files();
     bool is_changed();
 
 public:

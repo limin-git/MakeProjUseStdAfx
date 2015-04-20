@@ -68,3 +68,9 @@ Filter::Filter( const std::string& str )
         }
     }
 }
+
+
+const std::string& Filter::generate_filter()
+{
+    return m_str;
+}

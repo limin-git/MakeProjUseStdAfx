@@ -9,9 +9,13 @@
 #include "Globals.h"
 
 
-VisualStudioProject::VisualStudioProject( const std::string& str )
-    : m_str( str )
+VisualStudioProject::VisualStudioProject( const path& p )
+    : m_path( p )
 {
+    std::cout << m_path.string() << std::endl;
+    m_current_path = m_path.parent_path();
+    m_str = Utility::get_string_from_file( m_path.string() );
+
     static const boost::regex e
     (
         "(?x)"
@@ -49,6 +53,11 @@ VisualStudioProject::VisualStudioProject( const std::string& str )
 
 std::string VisualStudioProject::generate_visual_studio_project()
 {
+    if ( false == is_changed() )
+    {
+        return m_str;
+    }
+
     std::stringstream strm;
     strm
         << m_version << std::endl
@@ -65,4 +74,10 @@ std::string VisualStudioProject::generate_visual_studio_project()
         << "</VisualStudioProject>\n"
         ;
     return strm.str();
+}
+
+
+bool VisualStudioProject::is_changed()
+{
+    return m_configurations->is_changed();
 }

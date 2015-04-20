@@ -48,5 +48,41 @@ Configuration::Configuration( const std::string& str )
 
 std::string Configuration::generate_configuration()
 {
-    return m_str;
+    if ( false == is_changed() )
+    {
+        return m_str;
+    }
+
+    size_t tabs = 0;
+    while ( m_str[tabs++] == '\t' );
+    std::string indent = std::string( tabs - 1, '\t' );
+    std::string next_indent = indent + '\t';
+
+    std::stringstream strm;
+    strm << indent << "<Configuration\n";
+    Utility::output_options( strm, m_options, next_indent );
+    strm << next_indent << ">\n";
+    
+    for ( size_t i = 0; i < m_tools.size(); ++i )
+    {
+        strm << m_tools[i]->generate_tool() << std::endl;
+    }
+
+    strm << indent << "</Configuration>";
+
+    return strm.str();
+}
+
+
+bool Configuration::is_changed()
+{
+    for ( size_t i = 0; i < m_tools.size(); ++i )
+    {
+        if ( m_tools[i]->is_changed() )
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

@@ -8,7 +8,7 @@ public:
 
     References( const std::string& str );
 
-    std::string generate_references();
+    const std::string& generate_references();
 
 public:
 

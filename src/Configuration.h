@@ -7,8 +7,8 @@ class Configuration
 public:
 
     Configuration( const std::string& str );
-
     std::string generate_configuration();
+    bool is_changed();
 
 public:
 
