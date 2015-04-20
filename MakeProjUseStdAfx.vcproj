@@ -186,11 +186,91 @@
 			Name="src"
 			>
 			<File
+				RelativePath=".\src\CommonDefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Configuration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Configuration.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Configurations.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Configurations.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\File.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\File.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\FileConfiguration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\FileConfiguration.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Files.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Files.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Filter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Filter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Globals.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Globals.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\main.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Solution.cpp"
+				RelativePath=".\src\Platform.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Platform.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Platforms.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Platforms.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\References.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\References.h"
 				>
 			</File>
 			<File
@@ -206,6 +286,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Tool_ori.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ToolFiles.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ToolFiles.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Utility.cpp"
 				>
 			</File>
@@ -214,27 +306,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\VCCLCompilerTool.cpp"
+				RelativePath=".\src\VisualStudioProject.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\VCCLCompilerTool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCPreBuildEventTool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCPreBuildEventTool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Vcproj.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Vcproj.h"
+				RelativePath=".\src\VisualStudioProject.h"
 				>
 			</File>
 		</Filter>

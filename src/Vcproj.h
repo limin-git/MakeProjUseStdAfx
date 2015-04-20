@@ -1,7 +1,5 @@
 #pragma once
-
-
-using namespace boost::filesystem;
+#include "CommonDefs.h"
 
 
 class Vcproj
@@ -25,6 +23,8 @@ private:
     bool is_files_exist();
 
 public:
+
+    VisualStudioProjectPtr m_visual_studio_project;
 
     path m_path;
     std::string m_str;

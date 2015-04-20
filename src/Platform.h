@@ -2,13 +2,13 @@
 #include "CommonDefs.h"
 
 
-class Tool
+class Platform
 {
 public:
 
-    Tool( const std::string& str );
+    Platform( const std::string& str );
 
-    std::string generate_tool();
+    std::string generate_platform();
     bool is_changed();
 
 public:

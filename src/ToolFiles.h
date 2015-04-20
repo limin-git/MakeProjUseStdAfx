@@ -2,17 +2,16 @@
 #include "CommonDefs.h"
 
 
-class Tool
+class ToolFiles
 {
 public:
 
-    Tool( const std::string& str );
+    ToolFiles( const std::string& str );
 
-    std::string generate_tool();
+    std::string generate_toolfiles();
     bool is_changed();
 
 public:
 
     std::string m_str;
-    OptionList m_options;
 };

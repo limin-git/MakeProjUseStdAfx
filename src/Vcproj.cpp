@@ -3,6 +3,7 @@
 #include "Utility.h"
 #include "VCCLCompilerTool.h"
 #include "VCPreBuildEventTool.h"
+#include "VisualStudioProject.h"
 
 
 Vcproj::Vcproj( const path& p, const std::string& configuration_name )
@@ -13,8 +14,11 @@ Vcproj::Vcproj( const path& p, const std::string& configuration_name )
     m_current_path = m_path.parent_path();
     m_str = Utility::get_string_from_file( m_path.string() );
 
-    extract_files();
-    extract_additional_include_directories();
+
+    m_visual_studio_project.reset( new VisualStudioProject( m_str ) );
+
+    //extract_files();
+    //extract_additional_include_directories();
 }
 
 

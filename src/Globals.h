@@ -2,17 +2,16 @@
 #include "CommonDefs.h"
 
 
-class Tool
+class Globals
 {
 public:
 
-    Tool( const std::string& str );
+    Globals( const std::string& str );
 
-    std::string generate_tool();
+    std::string generate_globals();
     bool is_changed();
 
 public:
 
     std::string m_str;
-    OptionList m_options;
 };
