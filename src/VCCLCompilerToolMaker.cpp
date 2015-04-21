@@ -5,29 +5,42 @@
 #include "Configuration.h"
 #include "Tool.h"
 #include "OptionListHelper.h"
+#include "FilesHelper.h"
 
 
-VCCLCompilerToolMaker::VCCLCompilerToolMaker( VisualStudioProjectPtr project, const std::string& configuration_name )
-    : m_project( project ),
-      m_configuration_name( configuration_name )
+void VCCLCompilerToolMaker::initialize( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
-    std::vector<ConfigurationPtr>& configurations = m_project->m_configurations->m_configurations;
+    m_project = project;
+    m_configuration_name = configuration_name;
+    m_tool.reset();
+    m_tool_options.reset();
+
+    FilesHelper files_helper( m_project, m_configuration_name );
+    
+    if ( false == files_helper.is_exist() )
+    {
+        return;
+    }
+
+    ConfigurationPtrList& configurations = m_project->m_configurations->m_configurations;
+
     for ( size_t i = 0; i < configurations.size(); ++i )
     {
         ConfigurationPtr configuration = configurations[i];
-        OptionListHelperPtr config_opt_hlpr( new OptionListHelper( &configuration->m_options ) );
-        const Option& option = config_opt_hlpr->get_option( "Name" );
-        if ( option.second == ( m_configuration_name + "|Win32" ) )
+        OptionListHelper configuration_options( &configuration->m_options );
+
+        if ( configuration_options.get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
         {
-            std::vector<ToolPtr>& tools = configuration->m_tools;
+            ToolPtrList& tools = configuration->m_tools;
+
             for ( size_t i = 0; i < tools.size(); ++i )
             {
-                OptionListHelperPtr tool_opt_hlpr( new OptionListHelper( &tools[i]->m_options ) );
-                const Option& option = tool_opt_hlpr->get_option( "Name" );
-                if ( "VCCLCompilerTool" == option.second )
+                OptionListHelperPtr tool_options( new OptionListHelper( &tools[i]->m_options ) );
+
+                if ( tool_options->get_option_value( "Name" ) == "VCCLCompilerTool" )
                 {
                     m_tool = tools[i];
-                    m_helper = tool_opt_hlpr;
+                    m_tool_options = tool_options;
                     return;
                 }
             }
@@ -36,21 +49,29 @@ VCCLCompilerToolMaker::VCCLCompilerToolMaker( VisualStudioProjectPtr project, co
 }
 
 
-void VCCLCompilerToolMaker::make_all()
-{
-   make_PreprocessorDefinitions();
-   make_AdditionalOptions();
-   make_AdditionalIncludeDirectories();
-   make_PrecompiledHeaderFile();
-   make_UsePrecompiledHeader();
-   make_WarningLevel();
-   make_BrowseInformation();
-   make_MinimalRebuild();
 
-   if ( m_helper->is_changed() )
-   {
-       m_tool->set_changed();
-   }
+void VCCLCompilerToolMaker::make_project( VisualStudioProjectPtr project, const std::string& configuration_name )
+{
+    initialize( project, configuration_name );
+
+    if ( !m_tool )
+    {
+        return;
+    }
+
+    make_PreprocessorDefinitions();
+    make_AdditionalOptions();
+    make_AdditionalIncludeDirectories();
+    make_PrecompiledHeaderFile();
+    make_UsePrecompiledHeader();
+    make_WarningLevel();
+    make_BrowseInformation();
+    make_MinimalRebuild();
+
+    if ( m_tool_options->is_changed() )
+    {
+        m_tool->set_changed();
+    }
 }
 
 
@@ -62,7 +83,7 @@ void VCCLCompilerToolMaker::make_PreprocessorDefinitions()
         "WIN32", "_DEBUG", "_WINDOWS", "_USE_32BIT_TIME_T", "_AFXDLL", "_AFXEXT", "__WIN32__", "__x86__", "__NT__", "_WIN32_WINNT=0x500", "_CRT_SECURE_NO_DEPRECATE", "__OSVERSION=4"
     };
     size_t cnt = sizeof(preprocessors) / sizeof(const char*);
-    const Option& option = m_helper->get_option( option_name );
+    const Option& option = m_tool_options->get_option( option_name );
     std::string option_value = option.second;
 
     for ( size_t i = 0; i < cnt; ++i )
@@ -74,7 +95,7 @@ void VCCLCompilerToolMaker::make_PreprocessorDefinitions()
         }
     }
 
-    m_helper->modify_option( option_name, option_value );
+    m_tool_options->modify_option( option_name, option_value );
 }
 
 
@@ -83,13 +104,13 @@ void VCCLCompilerToolMaker::make_AdditionalOptions()
     const std::string option_name = "AdditionalOptions";
     std::string option_value = "/Zm1000";
 
-    if ( false == m_helper->is_option_exist( option_name ) )
+    if ( false == m_tool_options->is_option_exist( option_name ) )
     {
-        m_helper->insert_option( option_name, option_value, OptionListHelper::After, "Name" );
+        m_tool_options->insert_option( option_name, option_value, OptionListHelper::After, "Name" );
         return;
     }
 
-    const Option& option = m_helper->get_option( option_name );
+    const Option& option = m_tool_options->get_option( option_name );
 
     if ( option.second.find( option_value ) != std::string::npos )
     {
@@ -98,17 +119,17 @@ void VCCLCompilerToolMaker::make_AdditionalOptions()
 
     if ( option.second.empty() )
     {
-        m_helper->modify_option( option_name, option_value );
+        m_tool_options->modify_option( option_name, option_value );
     }
     else if ( option.second.find( "/Zm" ) == std::string::npos )
     {
         option_value = option.second + " " + option_value;
-        m_helper->modify_option( option_name, option_value );
+        m_tool_options->modify_option( option_name, option_value );
     }
     else
     {
         option_value = boost::regex_replace( option.second, boost::regex( "/Zm\\d+" ), option_value );
-        m_helper->modify_option( option_name, option_value );
+        m_tool_options->modify_option( option_name, option_value );
     }
 }
 
@@ -117,12 +138,12 @@ void VCCLCompilerToolMaker::make_AdditionalIncludeDirectories()
 {
     const std::string option_name = "AdditionalIncludeDirectories";
 
-    if ( false == m_helper->is_option_exist( option_name ) )
+    if ( false == m_tool_options->is_option_exist( option_name ) )
     {
-        m_helper->insert_option( option_name, "", OptionListHelper::Before, "PreprocessorDefinitions" );
+        m_tool_options->insert_option( option_name, "", OptionListHelper::Before, "PreprocessorDefinitions" );
     }
 
-    const Option& option = m_helper->get_option( option_name );
+    const Option& option = m_tool_options->get_option( option_name );
     //..\..\;..\..\..\cots\boost\boost_1_39_0;..\..\..\cots\ACE\6_0_4\ACE_wrappers;..\..\..\cots\omniORB\omniORB_4.1.6\include
     bool is_included_ace     = ( option.second.find( "ACE_wrappers" ) != std::string::npos );
     bool is_included_boost   = ( option.second.find( "boost_1_39_0" ) != std::string::npos );
@@ -187,7 +208,7 @@ void VCCLCompilerToolMaker::make_AdditionalIncludeDirectories()
         option_value_strm << ";" << omniorb_path.string();
     }
 
-    m_helper->modify_option( option_name, option_value_strm.str() );
+    m_tool_options->modify_option( option_name, option_value_strm.str() );
 }
 
 
@@ -196,9 +217,9 @@ void VCCLCompilerToolMaker::make_PrecompiledHeaderFile()
     const std::string option_name = "PrecompiledHeaderFile";
     const std::string stdafx_pch = "TA_StdAfx.pch";
 
-    if ( m_helper->is_option_exist( option_name ) )
+    if ( m_tool_options->is_option_exist( option_name ) )
     {
-        const Option& option = m_helper->get_option( option_name );
+        const Option& option = m_tool_options->get_option( option_name );
 
         if ( option.second.find( stdafx_pch ) != std::string::npos )
         {
@@ -217,13 +238,13 @@ void VCCLCompilerToolMaker::make_PrecompiledHeaderFile()
             std::string option_value = stdafx_path.string();
             boost::replace_first( option_value, m_configuration_name, "$(ConfigurationName)" );
 
-            if ( m_helper->is_option_exist( option_name ) )
+            if ( m_tool_options->is_option_exist( option_name ) )
             {
-                m_helper->modify_option( option_name, option_value );
+                m_tool_options->modify_option( option_name, option_value );
             }
             else
             {
-                m_helper->insert_option( option_name, option_value, OptionListHelper::Before, "AssemblerListingLocation" );
+                m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "AssemblerListingLocation" );
             }
 
             return;
@@ -241,13 +262,13 @@ void VCCLCompilerToolMaker::make_UsePrecompiledHeader()
     const std::string option_name = "UsePrecompiledHeader";
     const std::string option_value = "2";
 
-    if ( m_helper->is_option_exist( option_name ) )
+    if ( m_tool_options->is_option_exist( option_name ) )
     {
-        m_helper->modify_option( option_name,option_value );
+        m_tool_options->modify_option( option_name,option_value );
     }
     else
     {
-        m_helper->insert_option( option_name, option_value, OptionListHelper::Before, "PrecompiledHeaderFile" );
+        m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "PrecompiledHeaderFile" );
     }
 }
 
@@ -257,13 +278,13 @@ void VCCLCompilerToolMaker::make_WarningLevel()
     const std::string option_name = "WarningLevel";
     const std::string option_value = "3";
 
-    if ( m_helper->is_option_exist( option_name ) )
+    if ( m_tool_options->is_option_exist( option_name ) )
     {
-        m_helper->modify_option( option_name,option_value );
+        m_tool_options->modify_option( option_name,option_value );
     }
     else
     {
-        m_helper->insert_option( option_name, option_value, OptionListHelper::Before, "SuppressStartupBanner" );
+        m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "SuppressStartupBanner" );
     }
 }
 
@@ -271,7 +292,7 @@ void VCCLCompilerToolMaker::make_WarningLevel()
 void VCCLCompilerToolMaker::make_BrowseInformation()
 {
     const std::string option_name = "BrowseInformation";
-    m_helper->remove_option( option_name );
+    m_tool_options->remove_option( option_name );
 }
 
 
@@ -280,12 +301,12 @@ void VCCLCompilerToolMaker::make_MinimalRebuild()
     const std::string option_name = "MinimalRebuild";
     const std::string option_value = "true";
 
-    if ( m_helper->is_option_exist( option_name ) )
+    if ( m_tool_options->is_option_exist( option_name ) )
     {
-        m_helper->modify_option( option_name, option_value );
+        m_tool_options->modify_option( option_name, option_value );
     }
     else
     {
-        m_helper->insert_option( option_name, option_value, OptionListHelper::After, "PreprocessorDefinitions" );
+        m_tool_options->insert_option( option_name, option_value, OptionListHelper::After, "PreprocessorDefinitions" );
     }
 }

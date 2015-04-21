@@ -24,6 +24,12 @@ Option& OptionListHelper::get_option( const std::string& option_name )
 }
 
 
+const std::string& OptionListHelper::get_option_value( const std::string& option_name )
+{
+    return get_option( option_name ).second;
+}
+
+
 bool OptionListHelper::is_option_exist( const std::string& option_name )
 {
     for ( OptionList::iterator it = m_options->begin(); it != m_options->end(); ++it )

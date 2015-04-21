@@ -7,28 +7,34 @@
 #include "OptionListHelper.h"
 
 
-VCPreBuildEventToolMaker::VCPreBuildEventToolMaker( VisualStudioProjectPtr project, const std::string& configuration_name )
-    : m_project( project ),
-      m_configuration_name( configuration_name )
+void VCPreBuildEventToolMaker::initialize( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
-    std::vector<ConfigurationPtr>& configurations = m_project->m_configurations->m_configurations;
+    m_project = project;
+    m_configuration_name = configuration_name;
+    m_configuration.reset();
+    m_tool.reset();
+    m_tool_options.reset();
+
+    ConfigurationPtrList& configurations = m_project->m_configurations->m_configurations;
+
     for ( size_t i = 0; i < configurations.size(); ++i )
     {
         ConfigurationPtr configuration = configurations[i];
-        OptionListHelperPtr config_opt_hlpr( new OptionListHelper( &configuration->m_options ) );
-        const Option& option = config_opt_hlpr->get_option( "Name" );
-        if ( option.second == ( m_configuration_name + "|Win32" ) )
+        OptionListHelper configuration_options( &configuration->m_options );
+
+        if ( configuration_options.get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
         {
-            std::vector<ToolPtr>& tools = configuration->m_tools;
+            ToolPtrList& tools = configuration->m_tools;
+
             for ( size_t i = 0; i < tools.size(); ++i )
             {
-                OptionListHelperPtr tool_opt_hlpr( new OptionListHelper( &tools[i]->m_options ) );
-                const Option& option = tool_opt_hlpr->get_option( "Name" );
-                if ( "VCPreBuildEventTool" == option.second )
+                OptionListHelperPtr tool_options( new OptionListHelper( &tools[i]->m_options ) );
+
+                if ( tool_options->get_option_value( "Name" ) == "VCPreBuildEventTool" )
                 {
                     m_configuration = configuration;
                     m_tool = tools[i];
-                    m_helper = tool_opt_hlpr;
+                    m_tool_options = tool_options;
                     return;
                 }
             }
@@ -37,11 +43,18 @@ VCPreBuildEventToolMaker::VCPreBuildEventToolMaker( VisualStudioProjectPtr proje
 }
 
 
-void VCPreBuildEventToolMaker::make_all()
+void VCPreBuildEventToolMaker::make_project( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
+    initialize( project, configuration_name );
+
+    if ( ! m_configuration )
+    {
+        return;
+    }
+
     make_CommandLine();
 
-    if ( m_helper->is_changed() )
+    if ( m_tool_options->is_changed() )
     {
         m_tool->set_changed();
     }
@@ -52,7 +65,7 @@ void VCPreBuildEventToolMaker::make_CommandLine()
 {
     const char* enter_line = "&#x0D;&#x0A;";
     const char* option_name = "CommandLine";
-    const Option& option = m_helper->get_option( option_name );
+    const Option& option = m_tool_options->get_option( option_name );
 
     if ( option.second.find( "stdafx" ) != std::string::npos )
     {
@@ -87,17 +100,17 @@ void VCPreBuildEventToolMaker::make_CommandLine()
         << "IF NOT EXIST $(IntDir)\\vc90.idb COPY " << stdafx_pch_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.idb $(IntDir)\\vc90.idb" << enter_line
         ;
 
-    if ( false == m_helper->is_option_exist( option_name ) )
+    if ( false == m_tool_options->is_option_exist( option_name ) )
     {
-        m_helper->insert_option( option_name, option_value_strm.str(), OptionListHelper::After, "Name" );
+        m_tool_options->insert_option( option_name, option_value_strm.str(), OptionListHelper::After, "Name" );
     }
     else if ( option.second.empty() )
     {
-        m_helper->modify_option( option_name, option_value_strm.str() );
+        m_tool_options->modify_option( option_name, option_value_strm.str() );
     }
     else
     {
-        m_helper->modify_option( option_name, option.second + enter_line + option_value_strm.str() );
+        m_tool_options->modify_option( option_name, option.second + enter_line + option_value_strm.str() );
     }
 
     remove_vc90_pdb_idb();
@@ -107,21 +120,21 @@ void VCPreBuildEventToolMaker::make_CommandLine()
 void VCPreBuildEventToolMaker::remove_vc90_pdb_idb()
 {
     const std::string option_name = "IntermediateDirectory";
-    OptionListHelperPtr helper( new OptionListHelper( &m_configuration->m_options ) );
+    OptionListHelper configuration_options( &m_configuration->m_options );
 
-    if ( false == helper->is_option_exist( option_name ) )
+    if ( false == configuration_options.is_option_exist( option_name ) )
     {
         return;
     }
 
-    const Option& option = helper->get_option( option_name );
+    const std::string& option_value = configuration_options.get_option_value( option_name );
 
-    if ( option.second.empty() )
+    if ( option_value.empty() )
     {
         return;
     }
 
-    path director = boost::filesystem::system_complete( m_project->m_current_path / option.second );
+    path director = boost::filesystem::system_complete( m_project->m_current_path / option_value );
     path vc90_pdb = director / "vc90.pdb";
     path vc90_idb = director / "vc90.idb";
 
@@ -135,6 +148,10 @@ void VCPreBuildEventToolMaker::remove_vc90_pdb_idb()
         {
             std::cout << "\t" << "cannot delete " << vc90_pdb.string() << ", error: " << ec.message() << std::endl;
         }
+        else
+        {
+            std::cout << "\t" << "deleted " << vc90_pdb.string() << std::endl;
+        }
     }
 
     if ( boost::filesystem::exists( vc90_idb ) )
@@ -146,6 +163,10 @@ void VCPreBuildEventToolMaker::remove_vc90_pdb_idb()
         if ( ec )
         {
             std::cout << "\t" << "cannot delete " << vc90_idb.string() << ", error: " << ec.message() << std::endl;
+        }
+        else
+        {
+            std::cout << "\t" << "deleted " << vc90_idb.string() << std::endl;
         }
     }
 }

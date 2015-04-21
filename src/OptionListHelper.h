@@ -12,6 +12,7 @@ public:
 
     OptionListHelper( OptionList* options );
     Option& get_option( const std::string& option_name );
+    const std::string& get_option_value( const std::string& option_name );
     bool is_option_exist( const std::string& option_name );
     void modify_option( const std::string& option_name, const std::string& option_value );
     void insert_option( const std::string& option_name, const std::string& option_value, EPosition pos, const std::string& option );

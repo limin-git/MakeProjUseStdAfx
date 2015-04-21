@@ -14,6 +14,8 @@ FilesHelper::FilesHelper( VisualStudioProjectPtr project, const std::string& con
       m_configuration_name( configuration_name )
 {
     get_paths_from_files( m_project->m_files, m_paths );
+
+    Utility::output_paths( std::cout, m_paths );
 }
 
 
@@ -29,6 +31,7 @@ bool FilesHelper::is_exist()
 
     return true;
 }
+
 
 std::vector<path> FilesHelper::get_paths_by_extension( const path& extension )
 {
@@ -48,14 +51,20 @@ std::vector<path> FilesHelper::get_paths_by_extension( const path& extension )
 
 void FilesHelper::get_paths_from_files( FilesPtr files, std::vector<path>& paths )
 {
-    for ( size_t i = 0; i < files->m_filters.size(); ++i )
+    get_paths_from_filters_files( files->m_filters, files->m_files, paths );
+}
+
+
+void FilesHelper::get_paths_from_filters_files( const FilterPtrList& filters, const FilePtrList& files, std::vector<path>& paths )
+{
+    for ( size_t i = 0; i < filters.size(); ++i )
     {
-        get_path_from_filter( files->m_filters[i], paths );
+        get_path_from_filter( filters[i], paths );
     }
 
-    for ( size_t i = 0; i < files->m_files.size(); ++i )
+    for ( size_t i = 0; i < files.size(); ++i )
     {
-        path p = get_path_from_file( files->m_files[i] );
+        path p = get_path_from_file( files[i] );
 
         if ( false == p.empty() )
         {
@@ -67,40 +76,27 @@ void FilesHelper::get_paths_from_files( FilesPtr files, std::vector<path>& paths
 
 void FilesHelper::get_path_from_filter( FilterPtr filter, std::vector<path>& paths )
 {
-    for ( size_t i = 0; i < filter->m_filters.size(); ++i )
-    {
-        get_path_from_filter( filter->m_filters[i], paths );
-    }
-
-    for ( size_t i = 0; i < filter->m_files.size(); ++i )
-    {
-        path p = get_path_from_file( filter->m_files[i] );
-
-        if ( false == p.empty() )
-        {
-            paths.push_back( p );
-        }
-    }
+    get_paths_from_filters_files( filter->m_filters, filter->m_files, paths );
 }
 
 
 path FilesHelper::get_path_from_file( FilePtr file )
 {
-    const std::vector<FileConfigurationPtr>& file_configurations = file->m_file_configurations;
+    const FileConfigurationPtrList& file_configurations = file->m_file_configurations;
 
     for ( size_t i = 0; i < file_configurations.size(); ++i )
     {
-        OptionListHelper helper( &file_configurations[i]->m_options );
+        OptionListHelper file_configuration_options( &file_configurations[i]->m_options );
 
-        if ( helper.get_option( "Name" ).second == ( m_configuration_name + "|Win32" ) )
+        if ( file_configuration_options.get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
         {
-            if ( helper.get_option( "ExcludedFromBuild" ).second == "true" )
+            if ( file_configuration_options.get_option_value( "ExcludedFromBuild" ) == "true" )
             {
                 return path();
             }
         }
     }
 
-    OptionListHelper helper( &file->m_options );
-    return path( m_project->m_current_path / helper.get_option( "RelativePath" ).second );
+    OptionListHelper file_options( &file->m_options );
+    return path( boost::filesystem::system_complete( m_project->m_current_path / file_options.get_option_value( "RelativePath" ) ) );
 }

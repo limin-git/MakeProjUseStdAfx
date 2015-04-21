@@ -15,6 +15,7 @@ public:
 private:
 
     void get_paths_from_files( FilesPtr files, std::vector<path>& paths );
+    void get_paths_from_filters_files( const FilterPtrList& filters, const FilePtrList& files, std::vector<path>& paths );
     void get_path_from_filter( FilterPtr filter, std::vector<path>& paths );
     path get_path_from_file( FilePtr file );
 

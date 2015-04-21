@@ -17,5 +17,5 @@ public:
     bool m_is_changed;
     std::string m_str;
     OptionList m_options;
-    std::vector<ToolPtr> m_tools;
+    ToolPtrList m_tools;
 };

@@ -14,6 +14,6 @@ public:
 public:
 
     std::string m_str;
-    std::vector<FilterPtr> m_filters;
-    std::vector<FilePtr> m_files;
+    FilterPtrList m_filters;
+    FilePtrList m_files;
 };

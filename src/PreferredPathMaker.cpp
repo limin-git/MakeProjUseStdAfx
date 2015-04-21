@@ -7,15 +7,27 @@
 #include "Tool.h"
 
 
-PreferredPathMaker::PreferredPathMaker( VisualStudioProjectPtr project, const std::string& configuration_name )
-    : m_project( project ),
-      m_configuration_name( configuration_name )
+void PreferredPathMaker::initialize( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
-    std::vector<ConfigurationPtr>& configurations = m_project->m_configurations->m_configurations;
+    m_project = project;
+    m_configuration_name = configuration_name;
+    m_configuration.reset();
+    m_configuration_options.reset();
+    m_VCCLCompilerTool.reset();
+    m_VCCLCompilerTool_options.reset();
+    m_VCLibrarianTool.reset();
+    m_VCLibrarianTool_options.reset();
+    m_VCLinkerTool.reset();
+    m_VCLinkerTool_options.reset();
+    m_VCBscMakeTool.reset();
+    m_VCBscMakeTool_options.reset();
+
+    ConfigurationPtrList& configurations = m_project->m_configurations->m_configurations;
+
     for ( size_t i = 0; i < configurations.size(); ++i )
     {
         OptionListHelperPtr configuration_options( new OptionListHelper( &configurations[i]->m_options ) );
-        if ( configuration_options->get_option( "Name" ).second == ( m_configuration_name + "|Win32" ) )
+        if ( configuration_options->get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
         {
             m_configuration = configurations[i];
             m_configuration_options = configuration_options;
@@ -24,22 +36,22 @@ PreferredPathMaker::PreferredPathMaker( VisualStudioProjectPtr project, const st
             {
                 OptionListHelperPtr tool_options( new OptionListHelper( &configurations[i]->m_tools[j]->m_options ) );
 
-                if ( tool_options->get_option( "Name" ).second == "VCCLCompilerTool" )
+                if ( tool_options->get_option_value( "Name" ) == "VCCLCompilerTool" )
                 {
                     m_VCCLCompilerTool = configurations[i]->m_tools[j];
                     m_VCCLCompilerTool_options = tool_options;
                 }
-                else if ( tool_options->get_option( "Name" ).second == "VCLibrarianTool" )
+                else if ( tool_options->get_option_value( "Name" ) == "VCLibrarianTool" )
                 {
                     m_VCLibrarianTool = configurations[i]->m_tools[j];
                     m_VCLibrarianTool_options = tool_options;
                 }
-                else if ( tool_options->get_option( "Name" ).second == "VCLinkerTool" )
+                else if ( tool_options->get_option_value( "Name" ) == "VCLinkerTool" )
                 {
                     m_VCLinkerTool = configurations[i]->m_tools[j];
                     m_VCLinkerTool_options = tool_options;
                 }
-                else if ( tool_options->get_option( "Name" ).second == "VCBscMakeTool" )
+                else if ( tool_options->get_option_value( "Name" ) == "VCBscMakeTool" )
                 {
                     m_VCBscMakeTool = configurations[i]->m_tools[j];
                     m_VCBscMakeTool_options = tool_options;
@@ -50,8 +62,10 @@ PreferredPathMaker::PreferredPathMaker( VisualStudioProjectPtr project, const st
 }
 
 
-void PreferredPathMaker::make_all()
+void PreferredPathMaker::make_project( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
+    initialize( project, configuration_name );
+
     make_preferred_path();
 }
 
@@ -130,9 +144,7 @@ void PreferredPathMaker::make_preferred_path_4_option( OptionListHelperPtr optio
         return;
     }
 
-    const Option& option = options->get_option( option_name );
-
-    std::string option_value = option.second;
+    std::string option_value = options->get_option_value( option_name );
     char* p = const_cast<char*>( option_value.c_str() );
     bool is_changed = false;
 

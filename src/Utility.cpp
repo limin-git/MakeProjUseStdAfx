@@ -74,3 +74,14 @@ std::ostream& Utility::output_options( std::ostream& os, const OptionList& optio
 
     return os;
 }
+
+
+std::ostream& Utility::output_paths( std::ostream& os, std::vector<path>& paths )
+{
+    for ( size_t i = 0; i < paths.size(); ++i )
+    {
+        os << paths[i].string() << std::endl;
+    }
+
+    return os;
+}

@@ -11,7 +11,7 @@ Files::Files( const std::string& str )
         static const boost::regex filter_regex
         (
             "(?x)"
-            "^[\t]{2} <Filter .+? >"
+            "^[\t]{2} <Filter\\b .+? >"
             ".+?"
             "^[\t]{2} </Filter>"
         );

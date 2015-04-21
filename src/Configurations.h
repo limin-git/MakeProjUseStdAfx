@@ -14,5 +14,5 @@ public:
 public:
 
     std::string m_str;
-    std::vector<ConfigurationPtr> m_configurations;
+    ConfigurationPtrList m_configurations;
 };

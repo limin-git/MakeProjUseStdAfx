@@ -6,15 +6,16 @@ class IncludeStdAfxMaker
 {
 public:
 
-    IncludeStdAfxMaker( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
+    void make_project( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
 
-    virtual void make_all();
+private:
+
+    void initialize( VisualStudioProjectPtr project, const std::string& configuration_name );
     void add_include_StdAfx_h();
 
 public:
 
     VisualStudioProjectPtr m_project;
-    FilesPtr m_files;
     std::string m_configuration_name;
-    FilesHelperPtr m_helper;
+    FilesHelperPtr m_files_helper;
 };

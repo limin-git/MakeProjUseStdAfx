@@ -15,16 +15,6 @@ Solution::Solution( const path& p )
 }
 
 
-void Solution::make_solution()
-{
-    for ( size_t i = 0; i < m_projects.size(); ++i )
-    {
-        Vcproj p( m_projects[i] );
-        p.make_project();
-    }
-}
-
-
 void Solution::extract_projects()
 {
     if ( m_str.empty() )

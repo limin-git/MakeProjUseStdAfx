@@ -12,7 +12,7 @@
 VisualStudioProject::VisualStudioProject( const path& p )
     : m_path( p )
 {
-    std::cout << m_path.string() << std::endl;
+    //std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
     m_str = Utility::get_string_from_file( m_path.string() );
 

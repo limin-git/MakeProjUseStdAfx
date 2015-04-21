@@ -6,13 +6,12 @@ class PreferredPathMaker
 {
 public:
 
-    PreferredPathMaker( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
-
-    void make_all();
-    void make_preferred_path();
+    void make_project( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
 
 private:
 
+    void initialize( VisualStudioProjectPtr project, const std::string& configuration_name );
+    void make_preferred_path();
     void make_preferred_path_4_option( OptionListHelperPtr options, const std::string& option_name );
 
 public:

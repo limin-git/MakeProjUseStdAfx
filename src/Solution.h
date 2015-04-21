@@ -1,8 +1,5 @@
 #pragma once
-#include <boost/filesystem.hpp>
-
-
-using namespace boost::filesystem;
+#include "CommonDefs.h"
 
 
 class Solution
@@ -10,8 +7,8 @@ class Solution
 public:
 
     Solution( const path& p );
-
-    void make_solution();
+    
+    const std::vector<path>& get_project_paths() { return m_projects; }
 
 private:
 

@@ -15,5 +15,5 @@ public:
 
     std::string m_str;
     OptionList m_options;
-    std::vector<FileConfigurationPtr> m_file_configurations;
+    FileConfigurationPtrList m_file_configurations;
 };

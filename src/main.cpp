@@ -11,48 +11,55 @@
 
 void main(int argc, char* argv[])
 {
-#if 0
-    Solution sln( "C:\\Code\\PchBuild\\code\\tools\\build\\tools.build.Build_Base_Core.sln" );
-    sln.make_solution();
-    return;
-#endif
+    if ( argc != 2 )
+    {
+        std::cout
+            << "Usage: \n"
+            << "\t" << path( argv[0] ).filename().string() << " < .sln | .vcproj > " << std::endl;
+        return;
+    }
+    
+    path p = argv[1];
 
-#if 1
-    //std::string p = "C:\\Code\\PchBuild\\code\\transactive\\core\\alarm\\core.alarm.TA_Alarm.vcproj";
-    std::string p = "C:\\Code\\PchBuild\\code\\transactive\\core\\corba\\core.corba.TA_CorbaUtil.vcproj";
-    VisualStudioProjectPtr vp( new VisualStudioProject(p) );
+    if ( p.extension() != ".sln" && p.extension() != ".vcproj" )
+    {
+        std::cout << "only support .sln, .vcproj." << std::endl;
+        return;
+    }
 
-    VCCLCompilerToolMaker m1( vp );
-    m1.make_all();
-    VCPreBuildEventToolMaker m2( vp );
-    m2.make_all();
-    IncludeStdAfxMaker m3( vp );
-    m3.make_all();
-    PreferredPathMaker m4( vp );
-    m4.make_all();
+    VisualStudioProjectPtrList projects;
 
-    vp->save();
+    if ( p.extension() == ".sln" )
+    {
+        Solution sln( p );
+        const std::vector<path>&  project_paths = sln.get_project_paths();
 
-    //std::string out = vp->generate_visual_studio_project();
-    //Utility::write_string_to_file( out, "c:\\temp\\test.txt" );
+        for ( size_t i = 0; i < project_paths.size(); ++i )
+        {
+            VisualStudioProjectPtr project( new VisualStudioProject( project_paths[i] ) );
+            projects.push_back( project );
+        }
+    }
+    else
+    {
+        VisualStudioProjectPtr project( new VisualStudioProject( p ) );
+        projects.push_back( project );
+    }
 
+    VCCLCompilerToolMaker m1;
+    VCPreBuildEventToolMaker m2;
+    IncludeStdAfxMaker m3;
+    PreferredPathMaker m4;
 
+    for ( size_t i = 0; i < projects.size(); ++i )
+    {
+        std::cout << projects[i]->m_path.string() << std::endl;
 
+        m1.make_project( projects[i] );
+        m2.make_project( projects[i] );
+        m3.make_project( projects[i] );
+        m4.make_project( projects[i] );
 
-#endif
-
-    //Vcproj p( "C:\\My Document\\Code\\C++\\MakeProjUseStdAfx\\MakeProjUseStdAfx.vcproj" );
-    //Vcproj p( "C:\\Code\\FZL1_TIP\\TA_BASE\\code\\transactive\\app\\notification_service\\app.notification_service.NotificationServiceAgent.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\transactive\\core\\alarm\\core.alarm.TA_Alarm.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\transactive\\core\\uuid\\core.uuid.TA_Uuid.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\transactive\\core\\threads\\core.threads.TA_Thread.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\transactive\\core\\corba\\IDL\\core.corba.idl.TA_CorbaDef.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\transactive\\core\\versioning\\core.versioning.TA_Version.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\transactive\\core\\data_access_interface\\soe\\core.dai.soe.vcproj" );
-    //Vcproj p( "C:\\Code\\PchBuild\\code\\tools\\build\\core_library\\tools.build.core_library.TA_Base_Core.vcproj" );
-    //p.make_project();
-
-    //path p = "../../;..\..\..\cots\ACE\6_0_4\ACE_wrappers;..\..\..\cots\boost\boost_1_39_0;..\..\..\cots\omniORB\omniORB_4.1.6\include";
-    //p.make_preferred();
-    //std::cout << "\t" << p.string() << std::endl;
+        projects[i]->save();
+    }
 }

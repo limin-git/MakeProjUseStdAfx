@@ -266,6 +266,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Solution.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Solution.h"
 				>
 			</File>
@@ -275,10 +279,6 @@
 			</File>
 			<File
 				RelativePath=".\src\Tool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Tool_ori.h"
 				>
 			</File>
 			<File

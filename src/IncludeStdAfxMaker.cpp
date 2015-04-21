@@ -13,16 +13,18 @@
 #include "Utility.h"
 
 
-IncludeStdAfxMaker::IncludeStdAfxMaker( VisualStudioProjectPtr project, const std::string& configuration_name )
-    : m_project( project ),
-      m_configuration_name( configuration_name )
+void IncludeStdAfxMaker::initialize( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
-    m_helper.reset( new FilesHelper( m_project ) ); 
+    m_project = project;
+    m_configuration_name = configuration_name;
+    m_files_helper.reset( new FilesHelper( project ) );
 }
 
 
-void IncludeStdAfxMaker::make_all()
+void IncludeStdAfxMaker::make_project( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
+    initialize( project, configuration_name );
+
     add_include_StdAfx_h();
 }
 
@@ -31,12 +33,12 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
 {
     const char* include_stdafx_h = "#include \"StdAfx.h\"\n";
 
-    if ( false == m_helper->is_exist() )
+    if ( false == m_files_helper->is_exist() )
     {
         return;
     }
 
-    std::vector<path> paths = m_helper->get_paths_by_extension( ".cpp" );
+    std::vector<path> paths = m_files_helper->get_paths_by_extension( ".cpp" );
 
     for ( size_t i = 0; i < paths.size(); ++i )
     {
