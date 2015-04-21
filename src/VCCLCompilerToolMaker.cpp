@@ -81,6 +81,7 @@ void VCCLCompilerToolMaker::make_PreprocessorDefinitions()
     static const char* preprocessors[] =
     {
         "WIN32", "_DEBUG", "_WINDOWS", "_USE_32BIT_TIME_T", "_AFXDLL", "_AFXEXT", "__WIN32__", "__x86__", "__NT__", "_WIN32_WINNT=0x500", "_CRT_SECURE_NO_DEPRECATE", "__OSVERSION=4"
+        ,"_MBCS", "AFX_RESOURCE_DLL", "_USRDLL", "_WINDLL"
     };
     size_t cnt = sizeof(preprocessors) / sizeof(const char*);
     const Option& option = m_tool_options->get_option( option_name );
@@ -228,29 +229,34 @@ void VCCLCompilerToolMaker::make_PrecompiledHeaderFile()
     }
 
     path current_path = m_project->m_current_path;
-    path stdafx_path = "../stdafx" / m_configuration_name / stdafx_pch;
 
-    for ( size_t i = 0; i < 10; ++i )
+    const char* short_paths[] = { "stdafx", "core\\stdafx", "transactive\\core\\stdafx", "code\\transactive\\core\\stdafx" };
+    size_t cnt = sizeof(short_paths) / sizeof(const char*);
+
+    for ( size_t i = 0; i < cnt; ++i  )
     {
-        if ( boost::filesystem::exists( current_path / stdafx_path ) )
+        path stdafx_relative_path = "..";
+
+        for ( size_t j = 0; j < 10; ++j )
         {
-            stdafx_path.make_preferred();
-            std::string option_value = stdafx_path.string();
-            boost::replace_first( option_value, m_configuration_name, "$(ConfigurationName)" );
-
-            if ( m_tool_options->is_option_exist( option_name ) )
+            if ( boost::filesystem::exists( current_path / stdafx_relative_path / short_paths[i] / m_configuration_name / stdafx_pch ) )
             {
-                m_tool_options->modify_option( option_name, option_value );
-            }
-            else
-            {
-                m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "AssemblerListingLocation" );
+                std::string option_value = ( stdafx_relative_path / short_paths[i] / "$(ConfigurationName)" / stdafx_pch ).string();
+
+                if ( m_tool_options->is_option_exist( option_name ) )
+                {
+                    m_tool_options->modify_option( option_name, option_value );
+                }
+                else
+                {
+                    m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "AssemblerListingLocation" );
+                }
+
+                return;
             }
 
-            return;
+            stdafx_relative_path /= "..";
         }
-
-        stdafx_path = ".." / stdafx_path;
     }
 
     std::cout << "\t" << "can not find TA_StdAfx.pch." << std::endl;

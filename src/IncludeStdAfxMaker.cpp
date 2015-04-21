@@ -46,7 +46,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
         std::string str = Utility::get_string_from_file( p.string() );
 
         // already included
-        if ( boost::regex_search( str, boost::regex( "(?xi) \\#include \\s+ \"StdAfx\\.h\"" ) ) )
+        if ( boost::regex_search( str, boost::regex( "(?xi) ^[ \t]* \\#include \\s+ \"StdAfx\\.h\"" ) ) )
         {
             continue;
         }

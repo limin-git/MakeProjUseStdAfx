@@ -71,8 +71,9 @@ void VCPreBuildEventToolMaker::make_project( VisualStudioProjectPtr project, con
 
 void VCPreBuildEventToolMaker::make_CommandLine()
 {
-    const char* enter_line = "&#x0D;&#x0A;";
-    const char* option_name = "CommandLine";
+    const std::string enter_line = "&#x0D;&#x0A;";
+    const std::string option_name = "CommandLine";
+    const std::string stdafx_pch = "TA_StdAfx.pch";
     const std::string& option_value = m_tool_options->get_option_value( option_name );
 
     if ( option_value.find( "stdafx" ) != std::string::npos )
@@ -81,19 +82,27 @@ void VCPreBuildEventToolMaker::make_CommandLine()
     }
 
     path current_path = m_project->m_current_path;
-    path stdafx_pch_path = "..";
     bool is_path_found = false;
+    path stdafx_relative_path;
 
-    for ( size_t i = 0; i < 10; ++i )
+    const char* short_paths[] = { "stdafx", "core\\stdafx", "transactive\\core\\stdafx", "code\\transactive\\core\\stdafx" };
+    size_t cnt = sizeof(short_paths) / sizeof(const char*);
+
+    for ( size_t i = 0; i < cnt && false == is_path_found; ++i  )
     {
-        if ( boost::filesystem::exists( current_path / stdafx_pch_path / "stdafx" / m_configuration_name / "TA_StdAfx.pch" ) )
-        {
-            is_path_found = true;
-            stdafx_pch_path.make_preferred();
-            break;
-        }
+        stdafx_relative_path = "..";
 
-        stdafx_pch_path = ".." / stdafx_pch_path;
+        for ( size_t j = 0; j < 10; ++j )
+        {
+            if ( boost::filesystem::exists( current_path / stdafx_relative_path / short_paths[i] / m_configuration_name / stdafx_pch ) )
+            {
+                stdafx_relative_path = stdafx_relative_path / short_paths[i];
+                is_path_found = true;
+                break;
+            }
+
+            stdafx_relative_path /= "..";
+        }
     }
 
     if ( false == is_path_found )
@@ -104,8 +113,8 @@ void VCPreBuildEventToolMaker::make_CommandLine()
 
     std::stringstream option_value_strm;
     option_value_strm
-        << "IF NOT EXIST $(IntDir)\\vc90.pdb COPY " << stdafx_pch_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.pdb $(IntDir)\\vc90.pdb" << enter_line
-        << "IF NOT EXIST $(IntDir)\\vc90.idb COPY " << stdafx_pch_path.string() << "\\stdafx\\$(ConfigurationName)\\vc90.idb $(IntDir)\\vc90.idb" << enter_line
+        << "IF NOT EXIST $(IntDir)\\vc90.?db XCOPY /F " << stdafx_relative_path.string() << "\\$(ConfigurationName)\\vc90.?db $(IntDir)" << enter_line
+        //<< "IF NOT EXIST $(IntDir)\\vc90.idb COPY " << stdafx_relative_path.string() << "\\$(ConfigurationName)\\vc90.idb $(IntDir)\\vc90.idb" << enter_line
         ;
 
     if ( false == m_tool_options->is_option_exist( option_name ) )

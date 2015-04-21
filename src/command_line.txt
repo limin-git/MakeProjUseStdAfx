@@ -30,6 +30,8 @@ FindIncludes C:\Code\3001_TIP_NEW\TA_BASE\code\transactive\core\corba\core.corba
 
 
 C:\Code\PchBuild\code\tools\build\tools.build.Build_Base_Core.sln
+C:\Code\PchBuild\code\tools\build\tools.build.Build_Base_Bus.sln
+C:\Code\PchBuild\code\tools\build\tools.build.Build_Base_App.sln
 
 
 problems:
