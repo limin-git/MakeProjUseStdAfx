@@ -5,6 +5,7 @@
 #include "Configuration.h"
 #include "Tool.h"
 #include "OptionListHelper.h"
+#include "FilesHelper.h"
 
 
 void VCPreBuildEventToolMaker::initialize( VisualStudioProjectPtr project, const std::string& configuration_name )
@@ -15,6 +16,13 @@ void VCPreBuildEventToolMaker::initialize( VisualStudioProjectPtr project, const
     m_tool.reset();
     m_tool_options.reset();
 
+    FilesHelper files_helper( m_project, m_configuration_name );
+
+    if ( false == files_helper.is_exist( ".cpp" ) )
+    {
+        return;
+    }
+
     ConfigurationPtrList& configurations = m_project->m_configurations->m_configurations;
 
     for ( size_t i = 0; i < configurations.size(); ++i )
@@ -22,7 +30,7 @@ void VCPreBuildEventToolMaker::initialize( VisualStudioProjectPtr project, const
         ConfigurationPtr configuration = configurations[i];
         OptionListHelper configuration_options( &configuration->m_options );
 
-        if ( configuration_options.get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
+        if ( configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
         {
             ToolPtrList& tools = configuration->m_tools;
 
@@ -65,9 +73,9 @@ void VCPreBuildEventToolMaker::make_CommandLine()
 {
     const char* enter_line = "&#x0D;&#x0A;";
     const char* option_name = "CommandLine";
-    const Option& option = m_tool_options->get_option( option_name );
+    const std::string& option_value = m_tool_options->get_option_value( option_name );
 
-    if ( option.second.find( "stdafx" ) != std::string::npos )
+    if ( option_value.find( "stdafx" ) != std::string::npos )
     {
         return;
     }
@@ -104,13 +112,13 @@ void VCPreBuildEventToolMaker::make_CommandLine()
     {
         m_tool_options->insert_option( option_name, option_value_strm.str(), OptionListHelper::After, "Name" );
     }
-    else if ( option.second.empty() )
+    else if ( option_value.empty() )
     {
         m_tool_options->modify_option( option_name, option_value_strm.str() );
     }
     else
     {
-        m_tool_options->modify_option( option_name, option.second + enter_line + option_value_strm.str() );
+        m_tool_options->modify_option( option_name, option_value + enter_line + option_value_strm.str() );
     }
 
     remove_vc90_pdb_idb();
@@ -141,8 +149,8 @@ void VCPreBuildEventToolMaker::remove_vc90_pdb_idb()
     if ( boost::filesystem::exists( vc90_pdb ) )
     {
         boost::system::error_code ec;
-        permissions(vc90_pdb, all_all);
-        remove( vc90_pdb, ec);
+        boost::filesystem::permissions(vc90_pdb, all_all);
+        boost::filesystem::remove( vc90_pdb, ec);
 
         if ( ec )
         {
@@ -157,8 +165,8 @@ void VCPreBuildEventToolMaker::remove_vc90_pdb_idb()
     if ( boost::filesystem::exists( vc90_idb ) )
     {
         boost::system::error_code ec;
-        permissions(vc90_idb, all_all);
-        remove( vc90_idb, ec);
+        boost::filesystem::permissions(vc90_idb, all_all);
+        boost::filesystem::remove( vc90_idb, ec);
 
         if ( ec )
         {

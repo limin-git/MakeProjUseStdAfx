@@ -33,7 +33,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
 {
     const char* include_stdafx_h = "#include \"StdAfx.h\"\n";
 
-    if ( false == m_files_helper->is_exist() )
+    if ( false == m_files_helper->is_exist( ".cpp" ) )
     {
         return;
     }

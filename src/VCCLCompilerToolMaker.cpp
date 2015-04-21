@@ -17,7 +17,7 @@ void VCCLCompilerToolMaker::initialize( VisualStudioProjectPtr project, const st
 
     FilesHelper files_helper( m_project, m_configuration_name );
     
-    if ( false == files_helper.is_exist() )
+    if ( false == files_helper.is_exist( ".cpp" ) )
     {
         return;
     }
@@ -29,7 +29,7 @@ void VCCLCompilerToolMaker::initialize( VisualStudioProjectPtr project, const st
         ConfigurationPtr configuration = configurations[i];
         OptionListHelper configuration_options( &configuration->m_options );
 
-        if ( configuration_options.get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
+        if ( configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
         {
             ToolPtrList& tools = configuration->m_tools;
 

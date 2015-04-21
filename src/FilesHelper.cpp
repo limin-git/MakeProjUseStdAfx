@@ -14,22 +14,38 @@ FilesHelper::FilesHelper( VisualStudioProjectPtr project, const std::string& con
       m_configuration_name( configuration_name )
 {
     get_paths_from_files( m_project->m_files, m_paths );
-
-    Utility::output_paths( std::cout, m_paths );
+    //Utility::output_paths( std::cout, m_paths );
 }
 
 
-bool FilesHelper::is_exist()
+bool FilesHelper::is_exist( const path& extension )
 {
-    for ( size_t i = 0; i < m_paths.size(); ++i )
+    if ( extension.empty() )
     {
-        if ( false == boost::filesystem::exists( m_paths[i] ) )
+        for ( size_t i = 0; i < m_paths.size(); ++i )
         {
-            return false;
+            if ( false == boost::filesystem::exists( m_paths[i] ) )
+            {
+                return false;
+            }
         }
-    }
 
-    return true;
+        return ( false == m_paths.empty() );
+    }
+    else
+    {
+        std::vector<path> paths = get_paths_by_extension( extension );
+
+        for ( size_t i = 0; i < paths.size(); ++i )
+        {
+            if ( false == boost::filesystem::exists( m_paths[i] ) )
+            {
+                return false;
+            }
+        }
+
+        return ( false == paths.empty() );
+    }
 }
 
 
@@ -88,7 +104,7 @@ path FilesHelper::get_path_from_file( FilePtr file )
     {
         OptionListHelper file_configuration_options( &file_configurations[i]->m_options );
 
-        if ( file_configuration_options.get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
+        if ( file_configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
         {
             if ( file_configuration_options.get_option_value( "ExcludedFromBuild" ) == "true" )
             {

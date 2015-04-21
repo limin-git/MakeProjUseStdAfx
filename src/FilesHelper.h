@@ -6,9 +6,9 @@ class FilesHelper
 {
 public:
 
-    FilesHelper( VisualStudioProjectPtr project, const std::string& configuration_name = "Win32" );
+    FilesHelper( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
 
-    bool is_exist();
+    bool is_exist( const path& extension = path() );
     const std::vector<path>& get_paths() { return m_paths; }
     std::vector<path> get_paths_by_extension( const path& extension );
 

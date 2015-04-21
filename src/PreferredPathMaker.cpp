@@ -27,7 +27,7 @@ void PreferredPathMaker::initialize( VisualStudioProjectPtr project, const std::
     for ( size_t i = 0; i < configurations.size(); ++i )
     {
         OptionListHelperPtr configuration_options( new OptionListHelper( &configurations[i]->m_options ) );
-        if ( configuration_options->get_option_value( "Name" ) == ( m_configuration_name + "|Win32" ) )
+        if ( configuration_options->get_option_value( "Name" ) == m_configuration_name + "|Win32" )
         {
             m_configuration = configurations[i];
             m_configuration_options = configuration_options;

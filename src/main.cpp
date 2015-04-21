@@ -59,7 +59,10 @@ void main(int argc, char* argv[])
         m2.make_project( projects[i] );
         m3.make_project( projects[i] );
         m4.make_project( projects[i] );
+    }
 
+    for ( size_t i = 0; i < projects.size(); ++i )
+    {
         projects[i]->save();
     }
 }
