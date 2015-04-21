@@ -5,7 +5,8 @@
 
 
 Configuration::Configuration( const std::string& str )
-    : m_str( str )
+    : m_str( str ),
+      m_is_changed( false )
 {
     {
         // option
@@ -76,6 +77,11 @@ std::string Configuration::generate_configuration()
 
 bool Configuration::is_changed()
 {
+    if ( m_is_changed )
+    {
+        return true;
+    }
+
     for ( size_t i = 0; i < m_tools.size(); ++i )
     {
         if ( m_tools[i]->is_changed() )

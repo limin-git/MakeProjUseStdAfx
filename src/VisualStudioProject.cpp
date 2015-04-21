@@ -10,8 +10,7 @@
 
 
 VisualStudioProject::VisualStudioProject( const path& p )
-    : m_path( p ),
-      m_is_changed( false )
+    : m_path( p )
 {
     std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
@@ -54,7 +53,7 @@ VisualStudioProject::VisualStudioProject( const path& p )
 
 std::string VisualStudioProject::generate_visual_studio_project()
 {
-    if ( true == m_is_changed )
+    if ( false == is_changed() )
     {
         return m_str;
     }
@@ -80,7 +79,7 @@ std::string VisualStudioProject::generate_visual_studio_project()
 
 bool VisualStudioProject::is_changed()
 {
-    return m_is_changed || m_configurations->is_changed();
+    return m_configurations->is_changed();
 }
 
 
