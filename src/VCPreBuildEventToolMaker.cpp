@@ -113,8 +113,8 @@ void VCPreBuildEventToolMaker::make_CommandLine()
 
     std::stringstream option_value_strm;
     option_value_strm
-        << "IF NOT EXIST $(IntDir)\\vc90.?db XCOPY /F " << stdafx_relative_path.string() << "\\$(ConfigurationName)\\vc90.?db $(IntDir)" << enter_line
-        //<< "IF NOT EXIST $(IntDir)\\vc90.idb COPY " << stdafx_relative_path.string() << "\\$(ConfigurationName)\\vc90.idb $(IntDir)\\vc90.idb" << enter_line
+        << "IF NOT EXIST $(IntDir)\\vc90.?db XCOPY /F " << stdafx_relative_path.string() << "\\$(ConfigurationName)\\vc90.?db $(IntDir)\\" << enter_line
+        //<< "IF NOT EXIST $(IntDir)\\vc90.idb COPY " << stdafx_relative_path.string() << "\\$(ConfigurationName)\\vc90.idb $(IntDir)\\" << enter_line
         ;
 
     if ( false == m_tool_options->is_option_exist( option_name ) )

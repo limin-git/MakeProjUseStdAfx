@@ -22,39 +22,43 @@ void PreferredPathMaker::initialize( VisualStudioProjectPtr project, const std::
     m_VCBscMakeTool.reset();
     m_VCBscMakeTool_options.reset();
 
-    ConfigurationPtrList& configurations = m_project->m_configurations->m_configurations;
-
-    for ( size_t i = 0; i < configurations.size(); ++i )
+    if ( m_project && m_project->m_configurations )
     {
-        OptionListHelperPtr configuration_options( new OptionListHelper( &configurations[i]->m_options ) );
-        if ( configuration_options->get_option_value( "Name" ) == m_configuration_name + "|Win32" )
+        ConfigurationPtrList& configurations = m_project->m_configurations->m_configurations;
+
+        for ( size_t i = 0; i < configurations.size(); ++i )
         {
-            m_configuration = configurations[i];
-            m_configuration_options = configuration_options;
+            OptionListHelperPtr configuration_options( new OptionListHelper( &configurations[i]->m_options ) );
 
-            for ( size_t j = 0; j < configurations[i]->m_tools.size(); ++j )
+            if ( configuration_options->get_option_value( "Name" ) == m_configuration_name + "|Win32" )
             {
-                OptionListHelperPtr tool_options( new OptionListHelper( &configurations[i]->m_tools[j]->m_options ) );
+                m_configuration = configurations[i];
+                m_configuration_options = configuration_options;
 
-                if ( tool_options->get_option_value( "Name" ) == "VCCLCompilerTool" )
+                for ( size_t j = 0; j < configurations[i]->m_tools.size(); ++j )
                 {
-                    m_VCCLCompilerTool = configurations[i]->m_tools[j];
-                    m_VCCLCompilerTool_options = tool_options;
-                }
-                else if ( tool_options->get_option_value( "Name" ) == "VCLibrarianTool" )
-                {
-                    m_VCLibrarianTool = configurations[i]->m_tools[j];
-                    m_VCLibrarianTool_options = tool_options;
-                }
-                else if ( tool_options->get_option_value( "Name" ) == "VCLinkerTool" )
-                {
-                    m_VCLinkerTool = configurations[i]->m_tools[j];
-                    m_VCLinkerTool_options = tool_options;
-                }
-                else if ( tool_options->get_option_value( "Name" ) == "VCBscMakeTool" )
-                {
-                    m_VCBscMakeTool = configurations[i]->m_tools[j];
-                    m_VCBscMakeTool_options = tool_options;
+                    OptionListHelperPtr tool_options( new OptionListHelper( &configurations[i]->m_tools[j]->m_options ) );
+
+                    if ( tool_options->get_option_value( "Name" ) == "VCCLCompilerTool" )
+                    {
+                        m_VCCLCompilerTool = configurations[i]->m_tools[j];
+                        m_VCCLCompilerTool_options = tool_options;
+                    }
+                    else if ( tool_options->get_option_value( "Name" ) == "VCLibrarianTool" )
+                    {
+                        m_VCLibrarianTool = configurations[i]->m_tools[j];
+                        m_VCLibrarianTool_options = tool_options;
+                    }
+                    else if ( tool_options->get_option_value( "Name" ) == "VCLinkerTool" )
+                    {
+                        m_VCLinkerTool = configurations[i]->m_tools[j];
+                        m_VCLinkerTool_options = tool_options;
+                    }
+                    else if ( tool_options->get_option_value( "Name" ) == "VCBscMakeTool" )
+                    {
+                        m_VCBscMakeTool = configurations[i]->m_tools[j];
+                        m_VCBscMakeTool_options = tool_options;
+                    }
                 }
             }
         }

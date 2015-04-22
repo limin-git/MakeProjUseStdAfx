@@ -67,7 +67,10 @@ std::vector<path> FilesHelper::get_paths_by_extension( const path& extension )
 
 void FilesHelper::get_paths_from_files( FilesPtr files, std::vector<path>& paths )
 {
-    get_paths_from_filters_files( files->m_filters, files->m_files, paths );
+    if ( files )
+    {
+        get_paths_from_filters_files( files->m_filters, files->m_files, paths );
+    }
 }
 
 
@@ -92,12 +95,20 @@ void FilesHelper::get_paths_from_filters_files( const FilterPtrList& filters, co
 
 void FilesHelper::get_path_from_filter( FilterPtr filter, std::vector<path>& paths )
 {
-    get_paths_from_filters_files( filter->m_filters, filter->m_files, paths );
+    if ( filter )
+    {
+        get_paths_from_filters_files( filter->m_filters, filter->m_files, paths );
+    }
 }
 
 
 path FilesHelper::get_path_from_file( FilePtr file )
 {
+    if ( ! file )
+    {
+        return path();
+    }
+
     const FileConfigurationPtrList& file_configurations = file->m_file_configurations;
 
     for ( size_t i = 0; i < file_configurations.size(); ++i )

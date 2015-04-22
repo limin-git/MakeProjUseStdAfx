@@ -33,6 +33,8 @@ C:\Code\PchBuild\code\tools\build\tools.build.Build_Base_Core.sln
 C:\Code\PchBuild\code\tools\build\tools.build.Build_Base_Bus.sln
 C:\Code\PchBuild\code\tools\build\tools.build.Build_Base_App.sln
 
-
-problems:
+core
+----
 C:\Code\PchBuild\code\transactive\core\data_access_interface\entity_access\core.dai.entity_access.TA_EntityAccess.vcproj
+C:\Code\PchBuild\code\transactive\core\corba\core.corba.TA_CorbaUtil.vcproj
+C:\Code\PchBuild\code\transactive\core\data_access_interface\core.dai.TA_DAI.vcproj

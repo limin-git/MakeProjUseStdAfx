@@ -81,7 +81,7 @@ void VCCLCompilerToolMaker::make_PreprocessorDefinitions()
     static const char* preprocessors[] =
     {
         "WIN32", "_DEBUG", "_WINDOWS", "_USE_32BIT_TIME_T", "_AFXDLL", "_AFXEXT", "__WIN32__", "__x86__", "__NT__", "_WIN32_WINNT=0x500", "_CRT_SECURE_NO_DEPRECATE", "__OSVERSION=4"
-        ,"_MBCS", "AFX_RESOURCE_DLL", "_USRDLL", "_WINDLL"
+        //,"_MBCS", "AFX_RESOURCE_DLL", "_USRDLL", "_WINDLL"
     };
     size_t cnt = sizeof(preprocessors) / sizeof(const char*);
     const Option& option = m_tool_options->get_option( option_name );

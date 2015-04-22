@@ -79,7 +79,12 @@ std::string VisualStudioProject::generate_visual_studio_project()
 
 bool VisualStudioProject::is_changed()
 {
-    return m_configurations->is_changed();
+    if ( m_configurations )
+    {
+        return m_configurations->is_changed();
+    }
+
+    return false;
 }
 
 
