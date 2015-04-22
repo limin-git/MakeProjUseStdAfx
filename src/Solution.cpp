@@ -45,6 +45,32 @@ void Solution::extract_projects()
         path project_relative_path = it->str(4);
         path p = boost::filesystem::system_complete( m_current_path / project_relative_path );
         //std::cout << "\t" << p.string() << std::endl;
-        m_projects.push_back( p );
+
+        if ( is_safe( p ) )
+        {
+            m_projects.push_back( p );
+        }
     }
+}
+
+
+bool Solution::is_safe( const path& p )
+{
+    static std::set<path> s_black_list;
+
+    if ( s_black_list.empty() )
+    {
+        s_black_list.insert( "bus.tri_state_entity_tree_ctrl.TA_TriStateEntityTreeCtrl.vcproj" );
+        s_black_list.insert( "bus.scada.scada_tree.TA_ScadaTree.vcproj" );
+        s_black_list.insert( "bus.generic_gui.ItaUserMessage.TA_ItaUserMessage.vcproj" );
+        s_black_list.insert( "bus.sound.sound_client.TA_SoundClient.vcproj" );
+    }
+
+    if ( s_black_list.find( p.filename() ) == s_black_list.end() )
+    {
+        return true;
+    }
+
+    std::cout << "\t" << "in black list, ignore: " << p.string() << std::endl;
+    return false;
 }

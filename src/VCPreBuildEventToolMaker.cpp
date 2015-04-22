@@ -16,9 +16,7 @@ void VCPreBuildEventToolMaker::initialize( VisualStudioProjectPtr project, const
     m_tool.reset();
     m_tool_options.reset();
 
-    FilesHelper files_helper( m_project, m_configuration_name );
-
-    if ( false == files_helper.is_exist( ".cpp" ) )
+    if ( false == m_project->m_files_helper->is_exist( ".cpp" ) )
     {
         return;
     }

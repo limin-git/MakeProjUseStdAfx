@@ -9,5 +9,6 @@ struct Utility
     static OptionList extract_options_from_string( const std::string& str );
     static std::ostream& output_options( std::ostream& os, const OptionList& options, const std::string& indent = "" );
     static std::ostream& output_paths( std::ostream& os, std::vector<path>& paths );
+    static path search_parent_relative_path( const path& current_path, const path& parent_path, size_t deepth = 10 );
 };
 

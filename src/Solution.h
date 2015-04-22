@@ -14,6 +14,8 @@ private:
 
     void extract_projects();
 
+    bool is_safe( const path& p );
+
 public:
 
     path m_path;

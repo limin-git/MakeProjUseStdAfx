@@ -5,7 +5,8 @@
 
 
 Files::Files( const std::string& str )
-    : m_str( str )
+    : m_str( str ),
+      m_is_changed( false )
 {
     {
         static const boost::regex filter_regex

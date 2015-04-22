@@ -350,11 +350,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ProjectHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ProjectHelper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\RemoveStdAfxMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\RemoveStdAfxMaker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ToolMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ToolMaker.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\VCCLCompilerToolMaker.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\VCCLCompilerToolMaker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VCLinkerToolMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VCLinkerToolMaker.h"
 				>
 			</File>
 			<File
@@ -373,13 +405,6 @@
 		<File
 			RelativePath=".\src\main.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

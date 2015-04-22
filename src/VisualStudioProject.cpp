@@ -7,6 +7,8 @@
 #include "References.h"
 #include "Files.h"
 #include "Globals.h"
+#include "FilesHelper.h"
+#include "ProjectHelper.h"
 
 
 VisualStudioProject::VisualStudioProject( const path& p )
@@ -48,6 +50,10 @@ VisualStudioProject::VisualStudioProject( const path& p )
     {
         std::cout << "\t" << "failed to parse .vcproj." << std::endl;
     }
+
+    // create helpers
+    m_project_helper.reset( new ProjectHelper( this ) );
+    m_files_helper.reset( new FilesHelper( this ) );
 }
 
 
@@ -79,12 +85,19 @@ std::string VisualStudioProject::generate_visual_studio_project()
 
 bool VisualStudioProject::is_changed()
 {
+    bool changed = false;
+
     if ( m_configurations )
     {
-        return m_configurations->is_changed();
+        changed |= m_configurations->is_changed();
     }
 
-    return false;
+    if ( m_files )
+    {
+        changed |= m_files->is_changed();
+    }
+
+    return changed;
 }
 
 

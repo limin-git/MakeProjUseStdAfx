@@ -117,6 +117,8 @@ void PreferredPathMaker::make_preferred_path()
     {
         make_preferred_path_4_option( m_VCLinkerTool_options, "OutputFile" );
         make_preferred_path_4_option( m_VCLinkerTool_options, "AdditionalLibraryDirectories" );
+        make_preferred_path_4_option( m_VCLinkerTool_options, "ProgramDatabaseFile" );
+        make_preferred_path_4_option( m_VCLinkerTool_options, "ImportLibrary" );
 
         if ( m_VCLinkerTool_options->is_changed() )
         {

@@ -9,12 +9,15 @@
 #include "OptionListHelper.h"
 
 
-FilesHelper::FilesHelper( VisualStudioProjectPtr project, const std::string& configuration_name )
+FilesHelper::FilesHelper( VisualStudioProject* project, const std::string& configuration_name )
     : m_project( project ),
       m_configuration_name( configuration_name )
 {
-    get_paths_from_files( m_project->m_files, m_paths );
-    //Utility::output_paths( std::cout, m_paths );
+    if ( project != NULL )
+    {
+        get_paths_from_files( m_project->m_files, m_paths );
+        //Utility::output_paths( std::cout, m_paths );
+    }
 }
 
 
@@ -46,6 +49,23 @@ bool FilesHelper::is_exist( const path& extension )
 
         return ( false == paths.empty() );
     }
+}
+
+bool FilesHelper::has_file( const std::string& file_name )
+{
+    std::string lhs = boost::to_lower_copy( file_name );
+
+    for ( size_t i = 0; i < m_paths.size(); ++i )
+    {
+        std::string rhs = boost::to_lower_copy( m_paths[i].filename().string() );
+
+        if ( lhs == rhs )
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 

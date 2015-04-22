@@ -25,4 +25,7 @@ public:
     ReferencesPtr m_references;
     FilesPtr m_files;
     GlobalsPtr m_globals;
+
+    ProjectHelperPtr m_project_helper;
+    FilesHelperPtr m_files_helper;
 };

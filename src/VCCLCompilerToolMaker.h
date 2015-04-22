@@ -1,12 +1,20 @@
 #pragma once
 #include "CommonDefs.h"
+#include "ToolMaker.h"
 
 
-class VCCLCompilerToolMaker
+class VCCLCompilerToolMaker : ToolMaker
 {
 public:
 
-    void make_project( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
+    VCCLCompilerToolMaker()
+        : ToolMaker( "VCCLCompilerTool" )
+    {
+    }
+
+    virtual void make_project( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug" );
+
+private:
 
     void make_PreprocessorDefinitions();
     void make_AdditionalOptions();
@@ -16,15 +24,4 @@ public:
     void make_WarningLevel();
     void make_BrowseInformation();
     void make_MinimalRebuild();
-
-private:
-
-    void initialize( VisualStudioProjectPtr project, const std::string& configuration_name );
-
-public:
-
-    VisualStudioProjectPtr m_project;
-    std::string m_configuration_name;
-    ToolPtr m_tool;
-    OptionListHelperPtr m_tool_options;
 };

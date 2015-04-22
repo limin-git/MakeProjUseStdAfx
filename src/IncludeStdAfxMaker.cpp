@@ -17,7 +17,7 @@ void IncludeStdAfxMaker::initialize( VisualStudioProjectPtr project, const std::
 {
     m_project = project;
     m_configuration_name = configuration_name;
-    m_files_helper.reset( new FilesHelper( project ) );
+    m_files_helper.reset( new FilesHelper( project.get() ) );
 }
 
 

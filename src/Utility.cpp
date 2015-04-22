@@ -85,3 +85,25 @@ std::ostream& Utility::output_paths( std::ostream& os, std::vector<path>& paths 
 
     return os;
 }
+
+
+path Utility::search_parent_relative_path( const path& current_path, const path& parent_path, size_t deepth )
+{
+    // current: c:\code\transactive\core\corba
+    // parent:  c:\code\cots
+    // return:  ..\..\.., it means c:\code\cots = c:\code\transactive\core\corba\..\..\..\cots
+
+    path relative_path;
+
+    for ( size_t i = 0; i < deepth; ++i )
+    {
+        if ( boost::filesystem::exists( current_path / relative_path / parent_path ) )
+        {
+            return relative_path;
+        }
+
+        relative_path /= "..";
+    }
+
+    return path();
+}

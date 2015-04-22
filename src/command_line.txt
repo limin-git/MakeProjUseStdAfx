@@ -38,3 +38,7 @@ core
 C:\Code\PchBuild\code\transactive\core\data_access_interface\entity_access\core.dai.entity_access.TA_EntityAccess.vcproj
 C:\Code\PchBuild\code\transactive\core\corba\core.corba.TA_CorbaUtil.vcproj
 C:\Code\PchBuild\code\transactive\core\data_access_interface\core.dai.TA_DAI.vcproj
+C:\Code\PchBuild\code\transactive\bus\about_box\bus.about_box.TA_AboutBox.vcproj
+C:\Code\PchBuild\code\transactive\core\stdafx\core.stdafx.TA_StdAfx.vcproj
+C:\Code\PchBuild\code\transactive\bus\signs\pids_agent\IDL\bus.signs.pids_agent.IDL.TA_PidsAgentCorbaDef.vcproj
+C:\Code\PchBuild\code\transactive\bus\scada\common_library\IDL\bus.scada.common_library.idl.TA_ScadaCommonCorbaDef.vcproj
