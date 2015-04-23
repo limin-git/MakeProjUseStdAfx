@@ -19,7 +19,9 @@ void VCCLCompilerToolMaker::make_project( VisualStudioProjectPtr project, const 
         return;
     }
 
-    if ( "1" == m_project->m_project_helper->get_configuration_type() )
+    const std::string& configuration_type = m_project->m_project_helper->get_configuration_type();
+
+    if ( "1" == configuration_type || "2" == configuration_type )
     {
         make_UsePrecompiledHeader();
         make_AdditionalOptions();

@@ -86,6 +86,29 @@ std::vector<path> FilesHelper::get_paths_by_extension( const path& extension )
 }
 
 
+std::vector<path> FilesHelper::get_source_code_paths()
+{
+    const char* extensions[] = { ".c", ".cpp", ".cxx", ".cc", ".h", ".hpp", ".hxx", ".hh", ".inl" };
+    size_t cnt = sizeof(extensions) / sizeof(char*);
+
+    std::vector<path> paths;
+
+    for ( size_t i = 0; i < m_paths.size(); ++i )
+    {
+        for ( size_t j = 0; j < cnt; ++j )
+        {
+            if ( m_paths[i].extension() == extensions[j] )
+            {
+                paths.push_back( m_paths[i] );
+                break;
+            }
+        }
+    }
+
+    return paths;
+}
+
+
 void FilesHelper::get_paths_from_files( FilesPtr files, std::vector<path>& paths )
 {
     if ( files )

@@ -16,7 +16,7 @@ IncludeCollector::IncludeCollector( const path& p, const path& current_path, con
 
         if ( boost::regex_search( s, boost::regex( "(?x) \\b (cots|omniORB|boost|ACE_wrappers) \\b" ) ) )
         {
-            m_additional_directories[i] = path();
+            //m_additional_directories[i] = path();
         }
     }
 

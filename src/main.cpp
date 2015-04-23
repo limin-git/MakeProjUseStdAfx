@@ -62,7 +62,7 @@ void main(int argc, char* argv[])
         FilesHelperPtr files_helper = project->m_files_helper;
         const std::string& configuration_type = project->m_project_helper->get_configuration_type();
 
-        if ( ( configuration_type != "1" &&  configuration_type != "4" ) || // 1: Application (.exe), 4: Static Library (.lib)
+        if ( ( configuration_type != "1" &&  configuration_type != "2" &&  configuration_type != "4" ) || // 1: Application (.exe), 2: Dynamic Library (.dll), 4: Static Library (.lib)
              ( files_helper->has_file( "StdAfx.h" ) || files_helper->has_file( "StdAfx.cpp" ) ) )
         {
             continue;
@@ -79,7 +79,7 @@ void main(int argc, char* argv[])
             pre_build.make_project( project );
         }
 
-        if ( "1" == configuration_type ) // 1: Application (.exe)
+        if ( "1" == configuration_type || "2" == configuration_type ) // 1: Application (.exe)
         {
             link.make_project( project );
             generate_StdAfx.make_project( project );

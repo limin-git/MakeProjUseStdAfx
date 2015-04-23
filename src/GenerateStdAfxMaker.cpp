@@ -162,10 +162,12 @@ void GenerateStdAfxMaker::generate_StdAfx()
 
     for ( size_t i = 0; i < headers.size(); ++i )
     {
+        // TODO: ignore case
         project_includes.erase( headers[i] );
     }
 
     // 4.3.2 add transactive includes in order of app-bus-core.
+    // TODO: add cots
     const char* folders[] = { "\\app\\", "\\bus", "\\core\\" };
     size_t cnt = sizeof(folders) / sizeof(char*);
 
@@ -199,7 +201,7 @@ void GenerateStdAfxMaker::generate_StdAfx()
 
 void GenerateStdAfxMaker::collect_includes( std::set<path>& project_includes )
 {
-    std::vector<path> files = m_project->m_files_helper->get_paths_by_extension( ".cpp" );
+    const std::vector<path> files = m_project->m_files_helper->get_source_code_paths(); // donot get all, especially .rc
     const path& current_path = m_project->m_current_path;
     const std::vector<path>& additional_directories = m_project->m_project_helper->get_additional_include_directories();
     std::vector< std::set<path> > file_includes( files.size() );

@@ -49,11 +49,16 @@ SchedulingAgent
 C:\Code\PchBuild\code\transactive\app\scheduling\scheduling_agent\app.scheduling.scheduling_agent.SchedulingAgent.vcproj
 DutyAgent
 C:\Code\PchBuild\code\transactive\app\security\duty_agent\app.security.duty_agent.DutyAgent.vcproj
+SystemManager
+C:\Code\PchBuild\code\transactive\app\system_control\system_manager\app.system_control.system_manager.SystemManager.vcproj
+C:\Code\PchBuild\code\transactive\app\configuration\configuration_editor\app.configuration.configuration_editor.ConfigurationEditor.vcproj
 
 bus
 ---
-AboutBox
+AboutBox.dll
 C:\Code\PchBuild\code\transactive\bus\about_box\bus.about_box.TA_AboutBox.vcproj
+SharedAlarm.dll
+C:\Code\PchBuild\code\transactive\bus\alarm\shared_alarm\bus.alarm.shared_alarm.TA_SharedAlarm.vcproj
 PidsAgentCorbaDef
 C:\Code\PchBuild\code\transactive\bus\signs\pids_agent\IDL\bus.signs.pids_agent.IDL.TA_PidsAgentCorbaDef.vcproj
 C:\Code\PchBuild\code\transactive\bus\scada\common_library\IDL\bus.scada.common_library.idl.TA_ScadaCommonCorbaDef.vcproj
