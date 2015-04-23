@@ -25,7 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="IF NOT EXIST  $(ConfigurationName)\vc90.pdb MKLINK /H $(ConfigurationName)\vc90.pdb ..\StdAfx\$(ConfigurationName)\vc90.pdb&#x0D;&#x0A;IF NOT EXIST  $(ConfigurationName)\vc90.idb MKLINK /H $(ConfigurationName)\vc90.idb  ..\StdAfx\$(ConfigurationName)\vc90.idb&#x0D;&#x0A;"
+				CommandLine="XCOPY /D /Y /F ..\StdAfx\$(ConfigurationName)\vc90.?db $(ConfigurationName)&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -103,7 +103,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="IF NOT EXIST $(ConfigurationName)\vc90.?db XCOPY /F  ..\StdAfx\$(ConfigurationName)\vc90.?db $(ConfigurationName)"
+				CommandLine="XCOPY /D /Y /F ..\StdAfx\$(ConfigurationName)\vc90.?db $(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -318,11 +318,27 @@
 			Name="maker"
 			>
 			<File
+				RelativePath=".\src\FileCollector.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\FileCollector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\FilesHelper.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\FilesHelper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GenerateStdAfxMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GenerateStdAfxMaker.h"
 				>
 			</File>
 			<File

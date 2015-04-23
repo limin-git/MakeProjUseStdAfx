@@ -17,7 +17,11 @@ void IncludeStdAfxMaker::initialize( VisualStudioProjectPtr project, const std::
 {
     m_project = project;
     m_configuration_name = configuration_name;
-    m_files_helper.reset( new FilesHelper( project.get() ) );
+
+    if ( m_project )
+    {
+        m_files_helper = project->m_files_helper;
+    }
 }
 
 
@@ -43,10 +47,21 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
     for ( size_t i = 0; i < paths.size(); ++i )
     {
         path& p = paths[i];
+
+        if ( p.empty() )
+        {
+            continue;
+        }
+
         std::string str = Utility::get_string_from_file( p.string() );
 
+        if ( str.empty() )
+        {
+            continue;
+        }
+
         // already included
-        if ( boost::regex_search( str, boost::regex( "(?xi) ^[ \t]* \\#include \\s+ \"StdAfx\\.h\"" ) ) )
+        if ( boost::regex_search( str, boost::regex( "(?xi) ^[ \t]* \\#include [ \t]+ \" [^\"\\n]*? StdAfx\\.h \"" ) ) )
         {
             continue;
         }

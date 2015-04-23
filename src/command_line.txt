@@ -42,3 +42,9 @@ C:\Code\PchBuild\code\transactive\bus\about_box\bus.about_box.TA_AboutBox.vcproj
 C:\Code\PchBuild\code\transactive\core\stdafx\core.stdafx.TA_StdAfx.vcproj
 C:\Code\PchBuild\code\transactive\bus\signs\pids_agent\IDL\bus.signs.pids_agent.IDL.TA_PidsAgentCorbaDef.vcproj
 C:\Code\PchBuild\code\transactive\bus\scada\common_library\IDL\bus.scada.common_library.idl.TA_ScadaCommonCorbaDef.vcproj
+C:\Code\PchBuild\code\transactive\app\notification_service\app.notification_service.NotificationServiceAgent.vcproj
+C:\Code\PchBuild\code\transactive\app\system_control\system_controller\app.system_control.system_controller.SystemController.vcproj
+C:\Code\PchBuild\code\transactive\app\system_control\system_status_agent\app.system_control.system_status_agent.SystemStatusAgent.vcproj
+C:\Code\PchBuild\code\transactive\app\alarm\alarm_agent\app.alarm.alarm_agent.AlarmAgent.vcproj
+C:\Code\PchBuild\code\transactive\app\scheduling\scheduling_agent\app.scheduling.scheduling_agent.SchedulingAgent.vcproj
+C:\Code\PchBuild\code\transactive\app\security\duty_agent\app.security.duty_agent.DutyAgent.vcproj

@@ -10,8 +10,11 @@ public:
 
     const std::string& get_configuration_type();
 
+    const std::vector<path>& get_additional_include_directories();
+
 public:
 
     VisualStudioProject* m_project;
     std::string m_configuration_name;
+    std::vector<path> m_additional_include_directories;
 };

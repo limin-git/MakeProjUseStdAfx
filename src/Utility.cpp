@@ -2,9 +2,9 @@
 #include "Utility.h"
 
 
-std::string Utility::get_string_from_file( const std::string& file_path )
+std::string Utility::get_string_from_file( const path& file_path )
 {
-    std::ifstream ifs( file_path.c_str() );
+    std::ifstream ifs( file_path.string().c_str() );
 
     if ( ! ifs )
     {
@@ -18,14 +18,17 @@ std::string Utility::get_string_from_file( const std::string& file_path )
 
 bool Utility::write_string_to_file( const std::string& str, const path& file_path )
 {
-    boost::filesystem::path p = file_path;
-    boost::system::error_code ec;
-    boost::filesystem::permissions(p, boost::filesystem::all_all, ec);
-
-    if ( ec )
+    if ( boost::filesystem::exists( file_path ) )
     {
-        std::cout << "\t" << ec.message() << "\n";
-        return false;
+        boost::filesystem::path p = file_path;
+        boost::system::error_code ec;
+        boost::filesystem::permissions(p, boost::filesystem::all_all, ec);
+
+        if ( ec )
+        {
+            std::cout << "\t" << "cannot acquire permissions for " << file_path.string() << ": " << ec.message() << "\n";
+            return false;
+        }
     }
 
     std::ofstream ofs( file_path.c_str() );

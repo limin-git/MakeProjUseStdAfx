@@ -9,6 +9,7 @@
 #include "VCLinkerToolMaker.h"
 #include "ProjectHelper.h"
 #include "FilesHelper.h"
+#include "GenerateStdAfxMaker.h"
 
 
 void main(int argc, char* argv[])
@@ -31,7 +32,7 @@ void main(int argc, char* argv[])
 
     VisualStudioProjectPtrList projects;
 
-    if ( p.extension() == ".solution" )
+    if ( p.extension() == ".sln" )
     {
         Solution solution( p );
         const std::vector<path>&  project_paths = solution.get_project_paths();
@@ -48,29 +49,42 @@ void main(int argc, char* argv[])
         projects.push_back( project );
     }
 
-    VCCLCompilerToolMaker m1;
-    VCPreBuildEventToolMaker m2;
-    IncludeStdAfxMaker m3;
-    PreferredPathMaker m4;
-    //RemoveStdAfxMaker m5;
-    VCLinkerToolMaker m6;
+    VCCLCompilerToolMaker       compile;
+    VCPreBuildEventToolMaker    pre_build;
+    IncludeStdAfxMaker          add_include_stdafx;
+    PreferredPathMaker          preferred_path;
+    //RemoveStdAfxMaker         remove_stdafx;
+    VCLinkerToolMaker           link;
+    GenerateStdAfxMaker         generate_stdafx;
 
     for ( size_t i = 0; i < projects.size(); ++i )
     {
-        std::cout << projects[i]->m_path.string() << std::endl;
+        const std::string& configuration_type = projects[i]->m_project_helper->get_configuration_type();
+        FilesHelperPtr files_helper = projects[i]->m_files_helper;
 
-        if ( projects[i]->m_project_helper->get_configuration_type() != "4" ||
-             projects[i]->m_files_helper->has_file( "StdAfx.h" ) )
+        if ( ( configuration_type != "1" &&  configuration_type != "4" ) || // 1: Application (.exe), 4: Static Library (.lib)
+             ( files_helper->has_file( "StdAfx.h" ) || files_helper->has_file( "StdAfx.cpp" ) )
+           )
         {
             continue;
         }
 
-        m1.make_project( projects[i] );
-        m2.make_project( projects[i] );
-        m3.make_project( projects[i] );
-        m4.make_project( projects[i] );
-        //m5.make_project( projects[i] );
-        m6.make_project( projects[i] );
+        std::cout << projects[i]->m_path.string() << std::endl;
+
+        preferred_path.make_project( projects[i] );
+        add_include_stdafx.make_project( projects[i] );
+
+        if ( "4" == configuration_type )
+        {
+            compile.make_project( projects[i] );
+            pre_build.make_project( projects[i] );
+        }
+
+        if ( "1" == configuration_type )
+        {
+            link.make_project( projects[i] );
+            generate_stdafx.make_project( projects[i] );
+        }
     }
 
     for ( size_t i = 0; i < projects.size(); ++i )
