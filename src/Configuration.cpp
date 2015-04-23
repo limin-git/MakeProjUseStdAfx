@@ -11,7 +11,7 @@ Configuration::Configuration( const std::string& str )
     {
         // option
 
-        static const boost::regex e
+        const boost::regex e
         (
             "(?x)"
             "<Configuration .+? >"
@@ -29,7 +29,7 @@ Configuration::Configuration( const std::string& str )
     {
         // Tool
 
-        static const boost::regex e
+        const boost::regex e
         (
             "(?x)"
             "^[\t]+ <Tool .+? />"

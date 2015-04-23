@@ -20,7 +20,8 @@ FileCollector::FileCollector( const path& p, const path& current_path, const std
         }
     }
 
-    recursive_collect();
+    //recursive_collect();
+    simple_collect();
 }
 
 
@@ -37,7 +38,7 @@ const std::vector<path>& FileCollector::collect_from_file( const path& p )
         {
             std::string s = Utility::get_string_from_file( m_path );
             std::vector<path> paths;
-            static const boost::regex e
+            const boost::regex e
             (
                 "(?x)"
                 "^ [ \t]* \\#include [ \t]+ [\"<] ([^\"<>]+) [\">]"
@@ -165,6 +166,27 @@ void FileCollector::recursive_collect()
                     m_queue.push( include );
                 }
             }
+        }
+    }
+}
+
+
+void FileCollector::simple_collect()
+{
+    path parent = m_path.parent_path();
+    const std::vector<path>& includes = collect_from_file( m_path );
+
+    for ( size_t i = 0; i < includes.size(); ++i )
+    {
+        path include = search_path( includes[i], parent );
+
+        if ( false == include.empty() )
+        {
+            m_includes.insert( include );
+        }
+        else
+        {
+            m_includes.insert( includes[i] );
         }
     }
 }

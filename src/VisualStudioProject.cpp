@@ -18,7 +18,7 @@ VisualStudioProject::VisualStudioProject( const path& p )
     m_current_path = m_path.parent_path();
     m_str = Utility::get_string_from_file( m_path.string() );
 
-    static const boost::regex e
+    const boost::regex e
     (
         "(?x)"
         "( <\\?xml [ ]+ version .+? > ) \\n"                            // 1: version

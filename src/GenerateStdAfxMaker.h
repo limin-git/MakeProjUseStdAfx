@@ -14,7 +14,9 @@ private:
     void generate_StdAfx_h();
     void init_includes();
     void set_include( const std::string& include );
-    void collect_includes( std::vector<path>& project_includes );
+    void collect_includes( std::set<path>& project_includes );
+
+    void add_stdafx_to_project();
 
 public:
 

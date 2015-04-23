@@ -9,7 +9,7 @@ Files::Files( const std::string& str )
       m_is_changed( false )
 {
     {
-        static const boost::regex filter_regex
+        const boost::regex filter_regex
         (
             "(?x)"
             "^[\t]{2} <Filter\\b .+? >"
@@ -29,7 +29,7 @@ Files::Files( const std::string& str )
     }
 
     {
-        static const boost::regex file_regex
+        const boost::regex file_regex
         (
             "(?x)"
             "^[\t]{2} <File \\b .+? >"

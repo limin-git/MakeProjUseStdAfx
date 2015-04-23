@@ -7,6 +7,7 @@
 #include "OptionListHelper.h"
 #include "FilesHelper.h"
 #include "Utility.h"
+#include "ProjectHelper.h"
 
 
 void VCCLCompilerToolMaker::make_project( VisualStudioProjectPtr project, const std::string& configuration_name )
@@ -15,6 +16,13 @@ void VCCLCompilerToolMaker::make_project( VisualStudioProjectPtr project, const 
 
     if ( ! m_tool )
     {
+        return;
+    }
+
+    if ( "1" == m_project->m_project_helper->get_configuration_type() )
+    {
+        make_UsePrecompiledHeader();
+        make_AdditionalOptions();
         return;
     }
 

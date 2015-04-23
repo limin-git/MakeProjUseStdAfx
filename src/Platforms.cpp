@@ -6,7 +6,7 @@
 Platforms::Platforms( const std::string& str )
     : m_str( str )
 {
-    static const boost::regex e
+    const boost::regex e
     (
         "(?x)"
         "^[\t]+ <Platform\\b .+? />"

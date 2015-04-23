@@ -23,7 +23,7 @@ void Solution::extract_projects()
     }
 
     // extract additional include directories
-    static const boost::regex project_regex
+    const boost::regex project_regex
     (
         "(?x)"
         "(?<=\\n) ^ [ \\t]*"                            // starts with spaces

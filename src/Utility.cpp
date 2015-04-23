@@ -48,7 +48,7 @@ OptionList Utility::extract_options_from_string( const std::string& str )
 {
     OptionList options;
 
-    static const boost::regex e
+    const boost::regex e
     (
         "(?x)"
         "( \\w+ )"          //name

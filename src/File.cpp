@@ -8,7 +8,7 @@ File::File( const std::string& str )
     : m_str( str )
 {
     {
-        static const boost::regex e
+        const boost::regex e
         (
             "(?x)"
             "<File .+? >"
@@ -24,7 +24,7 @@ File::File( const std::string& str )
     }
 
     {
-        static const boost::regex e
+        const boost::regex e
         (
             "(?x)"
             "^[\t]+ <FileConfiguration .+? >"

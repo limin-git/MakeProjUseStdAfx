@@ -14,6 +14,7 @@ private:
 
     path search_path( const path& include, const path& parent );
     void recursive_collect();
+    void simple_collect();
     const std::vector<path>& collect_from_file( const path& file_path ); 
 
 public:

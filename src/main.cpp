@@ -73,10 +73,10 @@ void main(int argc, char* argv[])
 
         preferred_path.make_project( projects[i] );
         add_include_stdafx.make_project( projects[i] );
+        compile.make_project( projects[i] );
 
         if ( "4" == configuration_type )
         {
-            compile.make_project( projects[i] );
             pre_build.make_project( projects[i] );
         }
 
