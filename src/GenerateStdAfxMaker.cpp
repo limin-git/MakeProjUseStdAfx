@@ -11,7 +11,7 @@
 #include "OptionListHelper.h"
 #include "FilesHelper.h"
 #include "Utility.h"
-#include "FileCollector.h"
+#include "IncludeCollector.h"
 #include "ProjectHelper.h"
 
 
@@ -19,13 +19,13 @@ void GenerateStdAfxMaker::initialize( VisualStudioProjectPtr project, const std:
 {
     m_project = project;
     m_configuration_name = configuration_name;
-    
+
     if ( m_project )
     {
         m_files_helper = m_project->m_files_helper;
     }
 
-    init_includes();
+    init_standared_includes();
 }
 
 
@@ -33,11 +33,11 @@ void GenerateStdAfxMaker::make_project( VisualStudioProjectPtr project, const st
 {
     initialize( project, configuration_name );
 
-    generate_StdAfx_h();
+    generate_StdAfx();
 }
 
 
-void GenerateStdAfxMaker::init_includes()
+void GenerateStdAfxMaker::init_standared_includes()
 {
     static const char* includes[] =
     {
@@ -78,10 +78,9 @@ void GenerateStdAfxMaker::init_includes()
         "omnithread.h", "omniORB4/CORBA.h", "omniORB4/IOP_C.h", "omniORB4/IOP_S.h", "omniORB4/callDescriptor.h", "omniORB4/callHandle.h", "omniORB4/objTracker.h", "omniORB4/internal/orbParameters.h",
         "omniNotify.h", "COS/CosNotifyChannelAdmin.hh", "COS/CosNotifyFilter.hh", "COS/AttNotification.hh", "COS/CosEventChannelAdmin.hh", "COS/CosEventComm.hh", "COS/CosNotification.hh", "COS/CosNotifyComm.hh"
     };
-
-    //m_includes.clear();
-
     size_t cnt = sizeof(includes) / sizeof(char*);
+
+    m_includes.clear();
 
     for ( size_t i = 0; i < cnt; ++i )
     {
@@ -96,17 +95,14 @@ void GenerateStdAfxMaker::set_include( const std::string& include )
     {
         const std::string& s = m_includes[i].first;
 
-        if ( boost::contains( s, "/" ) )
+        if ( s == include )
+        {
+            m_includes[i].second = true;
+            break;
+        }
+        else if ( boost::contains( s, "/" ) )
         {
             if ( boost::iends_with( s, include ) )
-            {
-                m_includes[i].second = true;
-                break;
-            }
-        }
-        else
-        {
-            if ( s == include )
             {
                 m_includes[i].second = true;
                 break;
@@ -116,7 +112,7 @@ void GenerateStdAfxMaker::set_include( const std::string& include )
 }
 
 
-void GenerateStdAfxMaker::generate_StdAfx_h()
+void GenerateStdAfxMaker::generate_StdAfx()
 {
     if ( ! m_project )
     {
@@ -126,24 +122,31 @@ void GenerateStdAfxMaker::generate_StdAfx_h()
     path std_afx_h = m_project->m_current_path / "src\\StdAfx.h";
     path std_afx_cpp = m_project->m_current_path / "src\\StdAfx.cpp";
 
+    // 1. check existing
     if ( boost::filesystem::exists( std_afx_h ) || boost::filesystem::exists( std_afx_cpp ) )
     {
         return;
     }
 
+    // 2. collece includes
     std::set<path> project_includes;
+
     collect_includes( project_includes );
 
+    // 3. mark standared includes
     for ( std::set<path>::iterator it = project_includes.begin(); it != project_includes.end(); ++it )
     {
         //std::cout << it->filename().string() << std::endl;
         set_include( boost::trim_copy( it->filename().string() ) );
     }
 
+    // 4 generate StdAfx
     std::stringstream strm;
 
+    // 4.1
     strm << "#pragma once" << std::endl;
 
+    // 4.2 generate standared includes
     for ( size_t i = 0; i < m_includes.size(); ++i )
     {
         if ( true == m_includes[i].second )
@@ -152,6 +155,9 @@ void GenerateStdAfxMaker::generate_StdAfx_h()
         }
     }
 
+    // 4.3 generate transactive includes
+
+    // 4.3.1 remove files of this own project
     const std::vector<path>& headers = m_project->m_files_helper->get_paths();
 
     for ( size_t i = 0; i < headers.size(); ++i )
@@ -159,6 +165,7 @@ void GenerateStdAfxMaker::generate_StdAfx_h()
         project_includes.erase( headers[i] );
     }
 
+    // 4.3.2 add transactive includes in order of app-bus-core.
     const char* folders[] = { "\\app\\", "\\bus", "\\core\\" };
     size_t cnt = sizeof(folders) / sizeof(char*);
 
@@ -178,23 +185,20 @@ void GenerateStdAfxMaker::generate_StdAfx_h()
 
     //std::cout << strm.rdbuf() << std::endl;
 
+    // 5. generate StdAfs.h, StdAfx.cpp
     Utility::write_string_to_file( strm.str(), std_afx_h );
-    std::cout << "+ " << std_afx_h.string() << std::endl;
+    std::cout << "\t" << "+ " << std_afx_h.string() << std::endl;
     strm.str( "#include \"StdAfx.h\"\n" );
     Utility::write_string_to_file( strm.str(), std_afx_cpp );
-    std::cout << "+ " << std_afx_cpp.string() << std::endl;
+    std::cout << "\t" << "+ " << std_afx_cpp.string() << std::endl;
 
-    add_stdafx_to_project();
+    // 6. add StdAfx.h, StdAfx.cpp to .vcproj
+    add_StdAfx_files_to_vcproj();
 }
 
 
 void GenerateStdAfxMaker::collect_includes( std::set<path>& project_includes )
 {
-    if ( ! m_project )
-    {
-        return;
-    }
-
     std::vector<path> files = m_project->m_files_helper->get_paths_by_extension( ".cpp" );
     const path& current_path = m_project->m_current_path;
     const std::vector<path>& additional_directories = m_project->m_project_helper->get_additional_include_directories();
@@ -203,7 +207,7 @@ void GenerateStdAfxMaker::collect_includes( std::set<path>& project_includes )
 
     for ( size_t i = 0; i < files.size(); ++i )
     {
-        boost::shared_ptr<boost::thread> t = FileCollector::create_FileCollectorThread( file_includes[i], files[i], current_path, additional_directories );
+        boost::shared_ptr<boost::thread> t = IncludeCollector::create_FileCollectorThread( file_includes[i], files[i], current_path, additional_directories );
         threads.push_back( t );
     }
 
@@ -219,7 +223,7 @@ void GenerateStdAfxMaker::collect_includes( std::set<path>& project_includes )
 }
 
 
-void GenerateStdAfxMaker::add_stdafx_to_project()
+void GenerateStdAfxMaker::add_StdAfx_files_to_vcproj()
 {
     std::string& s = m_project->m_files->m_str;
     boost::smatch m;
@@ -229,29 +233,29 @@ void GenerateStdAfxMaker::add_stdafx_to_project()
         return;
     }
 
-    std::string tabs = m.str(1);
+    std::string indt = m.str(1);
     size_t pos = m.position(2);
     std::stringstream strm;
 
-    tabs += "\t";
+    indt += "\t";
 
     strm
-        << tabs << "<File\n"
-        << tabs << "\tRelativePath=\".\\src\\StdAfx.cpp\"\n"
-        << tabs << "\t>\n"
-        << tabs << "\t<FileConfiguration\n"
-        << tabs << "\t\tName=\"" << m_configuration_name << "|Win32\"\n"
-        << tabs << "\t\t>\n"
-        << tabs << "\t\t<Tool\n"
-        << tabs << "\t\t\tName=\"VCCLCompilerTool\"\n"
-        << tabs << "\t\t\tUsePrecompiledHeader=\"1\"\n"
-        << tabs << "\t\t/>\n"
-        << tabs << "\t</FileConfiguration>\n"
-        << tabs << "</File>\n"
-        << tabs << "<File\n"
-        << tabs << "\tRelativePath=\".\\src\\StdAfx.h\"\n"
-        << tabs << "\t>\n"
-        << tabs << "</File>\n"
+        << indt << "<File\n"
+        << indt << "	RelativePath=\".\\src\\StdAfx.cpp\"\n"
+        << indt << "	>\n"
+        << indt << "	<FileConfiguration\n"
+        << indt << "		Name=\"" << m_configuration_name << "|Win32\"\n"
+        << indt << "		>\n"
+        << indt << "		<Tool\n"
+        << indt << "			Name=\"VCCLCompilerTool\"\n"
+        << indt << "			UsePrecompiledHeader=\"1\"\n"
+        << indt << "		/>\n"
+        << indt << "	</FileConfiguration>\n"
+        << indt << "</File>\n"
+        << indt << "<File\n"
+        << indt << "	RelativePath=\".\\src\\StdAfx.h\"\n"
+        << indt << "	>\n"
+        << indt << "</File>\n"
         ;
 
     s.insert( pos, strm.str() );

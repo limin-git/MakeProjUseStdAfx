@@ -63,7 +63,7 @@ std::string Configuration::generate_configuration()
     strm << indent << "<Configuration\n";
     Utility::output_options( strm, m_options, next_indent );
     strm << next_indent << ">\n";
-    
+
     for ( size_t i = 0; i < m_tools.size(); ++i )
     {
         strm << m_tools[i]->generate_tool() << std::endl;

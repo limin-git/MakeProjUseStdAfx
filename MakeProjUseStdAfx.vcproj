@@ -190,23 +190,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Configuration.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Configurations.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Configurations.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\File.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\File.h"
 				>
 			</File>
 			<File
@@ -222,11 +210,99 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Files.h"
+				RelativePath=".\src\Filter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Filter.cpp"
+				RelativePath=".\src\Solution.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Tool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VisualStudioProject.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="common"
+			>
+			<File
+				RelativePath=".\src\Utility.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="maker"
+			>
+			<File
+				RelativePath=".\src\FilesHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GenerateStdAfxMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\IncludeCollector.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\IncludeStdAfxMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OptionListHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\PreferredPathMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ProjectHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\RemoveStdAfxMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ToolMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VCCLCompilerToolMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VCLinkerToolMaker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\VCPreBuildEventToolMaker.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="includes"
+			>
+			<File
+				RelativePath=".\src\Configuration.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Configurations.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\File.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Files.h"
 				>
 			</File>
 			<File
@@ -266,15 +342,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\Solution.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Solution.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Tool.cpp"
 				>
 			</File>
 			<File
@@ -290,129 +358,73 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\VisualStudioProject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\VisualStudioProject.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="common"
-			>
-			<File
-				RelativePath=".\src\CommonDefs.h"
+			<Filter
+				Name="maker"
 				>
-			</File>
-			<File
-				RelativePath=".\src\Utility.cpp"
+				<File
+					RelativePath=".\src\FilesHelper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\GenerateStdAfxMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\IncludeCollector.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\IncludeStdAfxMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\OptionListHelper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\PreferredPathMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ProjectHelper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\RemoveStdAfxMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ToolMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\VCCLCompilerToolMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\VCLinkerToolMaker.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\VCPreBuildEventToolMaker.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="common"
 				>
-			</File>
-			<File
-				RelativePath=".\src\Utility.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="maker"
-			>
-			<File
-				RelativePath=".\src\FileCollector.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\FileCollector.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\FilesHelper.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\FilesHelper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\GenerateStdAfxMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\GenerateStdAfxMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\IncludeStdAfxMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\IncludeStdAfxMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\OptionListHelper.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\OptionListHelper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\PreferredPathMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\PreferredPathMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ProjectHelper.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ProjectHelper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\RemoveStdAfxMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\RemoveStdAfxMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ToolMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ToolMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCCLCompilerToolMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCCLCompilerToolMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCLinkerToolMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCLinkerToolMaker.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCPreBuildEventToolMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\VCPreBuildEventToolMaker.h"
-				>
-			</File>
+				<File
+					RelativePath=".\src\CommonDefs.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Utility.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\src\command_line.txt"

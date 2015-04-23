@@ -7,7 +7,7 @@ class Solution
 public:
 
     Solution( const path& p );
-    
+
     const std::vector<path>& get_project_paths() { return m_projects; }
 
 private:

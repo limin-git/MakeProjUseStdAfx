@@ -21,7 +21,7 @@ void main(int argc, char* argv[])
             << "\t" << path( argv[0] ).filename().string() << " < .sln | .vcproj > " << std::endl;
         return;
     }
-    
+
     path p = argv[1];
 
     if ( p.extension() != ".sln" && p.extension() != ".vcproj" )
@@ -50,40 +50,39 @@ void main(int argc, char* argv[])
     }
 
     VCCLCompilerToolMaker       compile;
-    VCPreBuildEventToolMaker    pre_build;
-    IncludeStdAfxMaker          add_include_stdafx;
-    PreferredPathMaker          preferred_path;
-    //RemoveStdAfxMaker         remove_stdafx;
     VCLinkerToolMaker           link;
-    GenerateStdAfxMaker         generate_stdafx;
+    VCPreBuildEventToolMaker    pre_build;
+    PreferredPathMaker          preferred_path;
+    IncludeStdAfxMaker          add_include_StdAfx_for_cpp;
+    GenerateStdAfxMaker         generate_StdAfx;
 
     for ( size_t i = 0; i < projects.size(); ++i )
     {
-        const std::string& configuration_type = projects[i]->m_project_helper->get_configuration_type();
-        FilesHelperPtr files_helper = projects[i]->m_files_helper;
+        VisualStudioProjectPtr project = projects[i];
+        FilesHelperPtr files_helper = project->m_files_helper;
+        const std::string& configuration_type = project->m_project_helper->get_configuration_type();
 
         if ( ( configuration_type != "1" &&  configuration_type != "4" ) || // 1: Application (.exe), 4: Static Library (.lib)
-             ( files_helper->has_file( "StdAfx.h" ) || files_helper->has_file( "StdAfx.cpp" ) )
-           )
+             ( files_helper->has_file( "StdAfx.h" ) || files_helper->has_file( "StdAfx.cpp" ) ) )
         {
             continue;
         }
 
-        std::cout << projects[i]->m_path.string() << std::endl;
+        std::cout << project->m_path.string() << std::endl;
 
-        preferred_path.make_project( projects[i] );
-        add_include_stdafx.make_project( projects[i] );
-        compile.make_project( projects[i] );
+        compile.make_project( project );
+        preferred_path.make_project( project );
+        add_include_StdAfx_for_cpp.make_project( project );
 
-        if ( "4" == configuration_type )
+        if ( "4" == configuration_type ) // 4: Static Library (.lib)
         {
-            pre_build.make_project( projects[i] );
+            pre_build.make_project( project );
         }
 
-        if ( "1" == configuration_type )
+        if ( "1" == configuration_type ) // 1: Application (.exe)
         {
-            link.make_project( projects[i] );
-            generate_stdafx.make_project( projects[i] );
+            link.make_project( project );
+            generate_StdAfx.make_project( project );
         }
     }
 

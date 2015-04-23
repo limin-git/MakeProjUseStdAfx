@@ -11,12 +11,12 @@ public:
 private:
 
     void initialize( VisualStudioProjectPtr project, const std::string& configuration_name );
-    void generate_StdAfx_h();
-    void init_includes();
+    void init_standared_includes();
+    void generate_StdAfx();
     void set_include( const std::string& include );
     void collect_includes( std::set<path>& project_includes );
 
-    void add_stdafx_to_project();
+    void add_StdAfx_files_to_vcproj();
 
 public:
 

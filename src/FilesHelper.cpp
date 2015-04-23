@@ -51,6 +51,7 @@ bool FilesHelper::is_exist( const path& extension )
     }
 }
 
+
 bool FilesHelper::has_file( const std::string& file_name )
 {
     std::string lhs = boost::to_lower_copy( file_name );

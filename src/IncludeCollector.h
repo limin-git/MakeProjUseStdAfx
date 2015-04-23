@@ -2,11 +2,11 @@
 #include "CommonDefs.h"
 
 
-struct FileCollector
+struct IncludeCollector
 {
 public:
 
-    FileCollector( const path& p, const path& current_path, const std::vector<path>& additional );
+    IncludeCollector( const path& p, const path& current_path, const std::vector<path>& additional_directories );
 
     static boost::shared_ptr<boost::thread> create_FileCollectorThread( std::set<path>& includes, const path& p, const path& current_path, const std::vector<path>& additional );
 
@@ -15,7 +15,7 @@ private:
     path search_path( const path& include, const path& parent );
     void recursive_collect();
     void simple_collect();
-    const std::vector<path>& collect_from_file( const path& file_path ); 
+    const std::vector<path>& collect_from_file( const path& file_path );
 
 public:
 

@@ -1,12 +1,12 @@
 #include "StdAfx.h"
-#include "FileCollector.h"
+#include "IncludeCollector.h"
 #include "Utility.h"
 
 
-FileCollector::FileCollector( const path& p, const path& current_path, const std::vector<path>& additional )
+IncludeCollector::IncludeCollector( const path& p, const path& current_path, const std::vector<path>& additional_directories )
     : m_path( p ),
       m_current_path( current_path ),
-      m_additional_directories( additional )
+      m_additional_directories( additional_directories )
 {
     // std::cout << m_path.string() << std::endl;
 
@@ -25,11 +25,11 @@ FileCollector::FileCollector( const path& p, const path& current_path, const std
 }
 
 
-const std::vector<path>& FileCollector::collect_from_file( const path& p )
+const std::vector<path>& IncludeCollector::collect_from_file( const path& p )
 {
-    struct CollectFromFileThread
+    struct CollectIncludeThread
     {
-        CollectFromFileThread( const path& p, std::map< path, std::vector<path> >& m, boost::mutex& mutex, boost::condition_variable& con )
+        CollectIncludeThread( const path& p, std::map< path, std::vector<path> >& m, boost::mutex& mutex, boost::condition_variable& con )
             : m_path( p ), m_map( m ), m_mutex( mutex ), m_condition( con )
         {
         }
@@ -71,8 +71,8 @@ const std::vector<path>& FileCollector::collect_from_file( const path& p )
 
     if ( it == s_file_includes_map.end() )
     {
-        CollectFromFileThread date( p, s_file_includes_map, s_mutex, s_condition );
-        boost::thread t( date );
+        CollectIncludeThread data( p, s_file_includes_map, s_mutex, s_condition );
+        boost::thread t( data );
     }
 
     while ( it == s_file_includes_map.end() )
@@ -85,7 +85,7 @@ const std::vector<path>& FileCollector::collect_from_file( const path& p )
 }
 
 
-path FileCollector::search_path( const path& include, const path& parent )
+path IncludeCollector::search_path( const path& include, const path& parent )
 {
     if ( include.is_complete() )
     {
@@ -97,8 +97,7 @@ path FileCollector::search_path( const path& include, const path& parent )
 
         if ( boost::filesystem::exists( p ) && ! is_directory( p ) )
         {
-            //std::cout << boost::filesystem::system_complete(p).string() << std::endl;
-            return boost::filesystem::system_complete(p);
+            return boost::filesystem::system_complete( p );
         }
     }
 
@@ -107,8 +106,7 @@ path FileCollector::search_path( const path& include, const path& parent )
 
         if ( boost::filesystem::exists( p ) && ! is_directory( p ) )
         {
-            //std::cout << boost::filesystem::system_complete(p).string() << std::endl;
-            return boost::filesystem::system_complete(p);
+            return boost::filesystem::system_complete( p );
         }
     }
 
@@ -126,10 +124,9 @@ path FileCollector::search_path( const path& include, const path& parent )
             p = m_current_path / additional / include;
         }
 
-        if ( boost::filesystem::exists( p ) && ! is_directory(p) )
+        if ( boost::filesystem::exists( p ) && ! is_directory( p ) )
         {
-            //std::cout << boost::filesystem::system_complete(p).string() << std::endl;
-            return boost::filesystem::system_complete(p);
+            return boost::filesystem::system_complete( p );
         }
     }
 
@@ -137,14 +134,13 @@ path FileCollector::search_path( const path& include, const path& parent )
 }
 
 
-void FileCollector::recursive_collect()
+void IncludeCollector::recursive_collect()
 {
     m_queue.push( m_path );
 
     while ( false == m_queue.empty() )
     {
         path p = m_queue.front();
-        //std::cout << p.string() << std::endl;
         m_queue.pop();
         m_includes.insert( p );
         path parent = p.parent_path();
@@ -171,7 +167,7 @@ void FileCollector::recursive_collect()
 }
 
 
-void FileCollector::simple_collect()
+void IncludeCollector::simple_collect()
 {
     path parent = m_path.parent_path();
     const std::vector<path>& includes = collect_from_file( m_path );
@@ -192,18 +188,18 @@ void FileCollector::simple_collect()
 }
 
 
-boost::shared_ptr<boost::thread>  FileCollector::create_FileCollectorThread( std::set<path>& includes, const path& p, const path& current_path, const std::vector<path>& additional )
+boost::shared_ptr<boost::thread>  IncludeCollector::create_FileCollectorThread( std::set<path>& includes, const path& p, const path& current_path, const std::vector<path>& additional )
 {
-    struct FileCollectorThread
+    struct IncludeCollectorThread
     {
-        FileCollectorThread( std::set<path>& includes, const path& p, const path& current_path, const std::vector<path>& additional_directories )
+        IncludeCollectorThread( std::set<path>& includes, const path& p, const path& current_path, const std::vector<path>& additional_directories )
             : m_includes( includes ), m_path( p ), m_current_path( current_path ), m_additional_directories( additional_directories )
         {
         }
 
         void operator()()
         {
-            FileCollector collector( m_path, m_current_path, m_additional_directories );
+            IncludeCollector collector( m_path, m_current_path, m_additional_directories );
             m_includes = collector.m_includes;
         }
 
@@ -213,6 +209,6 @@ boost::shared_ptr<boost::thread>  FileCollector::create_FileCollectorThread( std
         const std::vector<path>& m_additional_directories;
     };
 
-    FileCollectorThread data( includes, p, current_path, additional );
+    IncludeCollectorThread data( includes, p, current_path, additional );
     return boost::shared_ptr<boost::thread>( new boost::thread( data ) );
 }
