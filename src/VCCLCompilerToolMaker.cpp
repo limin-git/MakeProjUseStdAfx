@@ -179,50 +179,36 @@ void VCCLCompilerToolMaker::make_AdditionalIncludeDirectories()
 void VCCLCompilerToolMaker::make_PrecompiledHeaderFile()
 {
     const std::string option_name = "PrecompiledHeaderFile";
-    const std::string stdafx_pch = "TA_StdAfx.pch";
+    const std::string StdAfx_pch = "TA_StdAfx.pch";
 
     if ( m_tool_options->is_option_exist( option_name ) )
     {
-        const Option& option = m_tool_options->get_option( option_name );
+        const std::string& option_value = m_tool_options->get_option_value( option_name );
 
-        if ( option.second.find( stdafx_pch ) != std::string::npos )
+        if ( option_value.find( StdAfx_pch ) != std::string::npos )
         {
             return;
         }
     }
 
-    path current_path = m_project->m_current_path;
+    path stdafx_relative_path = Utility::search_StdAfx_pch_relative_path( m_project->m_current_path, m_configuration_name, StdAfx_pch );
 
-    const char* short_paths[] = { "stdafx", "core\\stdafx", "transactive\\core\\stdafx", "code\\transactive\\core\\stdafx" };
-    size_t cnt = sizeof(short_paths) / sizeof(const char*);
-
-    for ( size_t i = 0; i < cnt; ++i  )
+    if ( stdafx_relative_path.empty() )
     {
-        path stdafx_relative_path = "..";
-
-        for ( size_t j = 0; j < 10; ++j )
-        {
-            if ( boost::filesystem::exists( current_path / stdafx_relative_path / short_paths[i] / m_configuration_name / stdafx_pch ) )
-            {
-                std::string option_value = ( stdafx_relative_path / short_paths[i] / "$(ConfigurationName)" / stdafx_pch ).string();
-
-                if ( m_tool_options->is_option_exist( option_name ) )
-                {
-                    m_tool_options->modify_option( option_name, option_value );
-                }
-                else
-                {
-                    m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "AssemblerListingLocation" );
-                }
-
-                return;
-            }
-
-            stdafx_relative_path /= "..";
-        }
+        std::cout << "\t" << "can not find " << StdAfx_pch << std::endl;
+        return;
     }
 
-    std::cout << "\t" << "can not find TA_StdAfx.pch." << std::endl;
+    std::string option_value = ( stdafx_relative_path / "$(ConfigurationName)" / StdAfx_pch ).string();
+
+    if ( m_tool_options->is_option_exist( option_name ) )
+    {
+        m_tool_options->modify_option( option_name, option_value );
+    }
+    else
+    {
+        m_tool_options->insert_option( option_name, option_value, OptionListHelper::Before, "AssemblerListingLocation" );
+    }
 }
 
 

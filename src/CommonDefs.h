@@ -47,3 +47,14 @@ typedef boost::shared_ptr<FilesHelper> FilesHelperPtr;
 
 class ProjectHelper;
 typedef boost::shared_ptr<ProjectHelper> ProjectHelperPtr;
+
+
+const path _sln                             = ".sln";
+const path _vcproj                          = ".vcproj";
+const path StdAfx_h                         = "StdAfx.h";
+const path StdAfx_cpp                       = "StdAfx.cpp";
+#define ct_MakeFile                         "0"
+#define ct_Application                      "1"
+#define ct_DynamicLibrary                   "2"
+#define ct_StaticLibrary                    "4"
+#define ct_Utility                          "10"

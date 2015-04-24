@@ -39,7 +39,7 @@ void GenerateStdAfxMaker::make_project( VisualStudioProjectPtr project, const st
 
 void GenerateStdAfxMaker::init_standared_includes()
 {
-    static const char* includes[] =
+    static const path includes[] =
     {
         // atlmfc
         "afx.h", "afxadv.h", "afxcoll.h", "afxconv.h", "afxcview.h", "afxdlgs.h", "afxdllx.h", "afxmt.h", "afxpriv.h", "atlbase.h", "atlcom.h", "atlcomcli.h",
@@ -78,7 +78,7 @@ void GenerateStdAfxMaker::init_standared_includes()
         "omnithread.h", "omniORB4/CORBA.h", "omniORB4/IOP_C.h", "omniORB4/IOP_S.h", "omniORB4/callDescriptor.h", "omniORB4/callHandle.h", "omniORB4/objTracker.h", "omniORB4/internal/orbParameters.h",
         "omniNotify.h", "COS/CosNotifyChannelAdmin.hh", "COS/CosNotifyFilter.hh", "COS/AttNotification.hh", "COS/CosEventChannelAdmin.hh", "COS/CosEventComm.hh", "COS/CosNotification.hh", "COS/CosNotifyComm.hh"
     };
-    size_t cnt = sizeof(includes) / sizeof(char*);
+    size_t cnt = sizeof(includes) / sizeof(path);
 
     m_includes.clear();
 
@@ -89,20 +89,20 @@ void GenerateStdAfxMaker::init_standared_includes()
 }
 
 
-void GenerateStdAfxMaker::set_include( const std::string& include )
+void GenerateStdAfxMaker::set_include( const path& include )
 {
     for ( size_t i = 0; i < m_includes.size(); ++i )
     {
-        const std::string& s = m_includes[i].first;
+        const path& p = m_includes[i].first;
 
-        if ( s == include )
+        if ( p == include )
         {
             m_includes[i].second = true;
             break;
         }
-        else if ( boost::contains( s, "/" ) )
+        else if ( p.has_parent_path() )
         {
-            if ( boost::iends_with( s, include ) )
+            if ( p.filename() == include.filename() )
             {
                 m_includes[i].second = true;
                 break;

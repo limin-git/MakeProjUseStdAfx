@@ -9,7 +9,7 @@ public:
     FilesHelper( VisualStudioProject* project, const std::string& configuration_name = "Debug" );
 
     bool is_exist( const path& extension = path() );
-    bool has_file( const std::string& file_name );
+    bool has_file( const path& file_name );
     const std::vector<path>& get_paths() { return m_paths; }
     std::vector<path> get_paths_by_extension( const path& extension );
     std::vector<path> get_source_code_paths(); // .h, .cpp, .h, .c

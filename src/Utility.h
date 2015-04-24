@@ -10,5 +10,5 @@ struct Utility
     static std::ostream& output_options( std::ostream& os, const OptionList& options, const std::string& indent = "" );
     static std::ostream& output_paths( std::ostream& os, std::vector<path>& paths );
     static path search_parent_relative_path( const path& current_path, const path& parent_path, size_t deepth = 10 );
+    static path search_StdAfx_pch_relative_path( const path& current_path, const std::string& configuration_name = "Debug", const std::string& StdAfx_pch = "TA_StdAfx.pch", size_t deepth = 10 );
 };
-

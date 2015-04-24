@@ -19,6 +19,7 @@ void ToolMaker::initialize( VisualStudioProjectPtr project, const std::string& c
 {
     m_project = project;
     m_configuration_name = configuration_name;
+    m_configuration.reset();
     m_tool.reset();
     m_tool_options.reset();
 
@@ -44,6 +45,7 @@ void ToolMaker::initialize( VisualStudioProjectPtr project, const std::string& c
 
                 if ( tool_options->get_option_value( "Name" ) == m_tool_name )
                 {
+                    m_configuration = configuration;
                     m_tool = tools[i];
                     m_tool_options = tool_options;
                     return;

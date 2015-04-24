@@ -13,7 +13,7 @@ private:
     void initialize( VisualStudioProjectPtr project, const std::string& configuration_name );
     void init_standared_includes();
     void generate_StdAfx();
-    void set_include( const std::string& include );
+    void set_include( const path& include );
     void collect_includes( std::set<path>& project_includes );
 
     void add_StdAfx_files_to_vcproj();
@@ -23,5 +23,5 @@ public:
     VisualStudioProjectPtr m_project;
     std::string m_configuration_name;
     FilesHelperPtr m_files_helper;
-    std::vector< std::pair<std::string, bool> > m_includes;
+    std::vector< std::pair<path, bool> > m_includes;
 };

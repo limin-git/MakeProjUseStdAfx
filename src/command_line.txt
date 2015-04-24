@@ -55,6 +55,12 @@ C:\Code\PchBuild\code\transactive\app\configuration\configuration_editor\app.con
 
 bus
 ---
+AlarmListCtrl
+C:\Code\PchBuild\code\transactive\bus\alarm\alarm_list_control\bus.alarm.alarm_list_control.TA_AlarmListCtrl.vcproj
+PlanTree
+C:\Code\PchBuild\code\transactive\bus\response_plans\plan_tree\bus.response_plans.plan_tree.TA_PlanTree.vcproj
+GenericGUI
+C:\Code\PchBuild\code\transactive\bus\generic_gui\bus.generic_gui.TA_GenericGUI.vcproj
 AboutBox.dll
 C:\Code\PchBuild\code\transactive\bus\about_box\bus.about_box.TA_AboutBox.vcproj
 SharedAlarm.dll

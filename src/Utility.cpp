@@ -8,7 +8,7 @@ std::string Utility::get_string_from_file( const path& file_path )
 
     if ( ! ifs )
     {
-        std::cout << "\t" << "cannot open file: " << file_path << std::endl;
+        std::cout << "\t" << "can not open file: " << file_path << std::endl;
         return "";
     }
 
@@ -26,7 +26,7 @@ bool Utility::write_string_to_file( const std::string& str, const path& file_pat
 
         if ( ec )
         {
-            std::cout << "\t" << "cannot acquire permissions for " << file_path.string() << ": " << ec.message() << "\n";
+            std::cout << "\t" << "can not acquire permissions for " << file_path.string() << ": " << ec.message() << "\n";
             return false;
         }
     }
@@ -35,7 +35,7 @@ bool Utility::write_string_to_file( const std::string& str, const path& file_pat
 
     if ( ! ofs )
     {
-        std::cout << "\t" << "cannot open file: " << file_path << std::endl;
+        std::cout << "\t" << "can not open file: " << file_path << std::endl;
         return false;
     }
 
@@ -106,6 +106,30 @@ path Utility::search_parent_relative_path( const path& current_path, const path&
         }
 
         relative_path /= "..";
+    }
+
+    return path();
+}
+
+
+path Utility::search_StdAfx_pch_relative_path( const path& current_path, const std::string& configuration_name, const std::string& StdAfx_pch, size_t deepth )
+{
+    const path short_paths[] = { "stdafx", "core\\stdafx", "transactive\\core\\stdafx", "code\\transactive\\core\\stdafx" };
+    const size_t size = sizeof(short_paths) / sizeof(path);
+
+    for ( size_t i = 0; i < size; ++i  )
+    {
+        path stdafx_relative_path;
+
+        for ( size_t j = 0; j < deepth; ++j )
+        {
+            if ( boost::filesystem::exists( current_path / stdafx_relative_path / short_paths[i] / configuration_name / StdAfx_pch ) )
+            {
+                return stdafx_relative_path / short_paths[i];
+            }
+
+            stdafx_relative_path /= "..";
+        }
     }
 
     return path();

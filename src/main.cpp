@@ -10,6 +10,7 @@
 #include "ProjectHelper.h"
 #include "FilesHelper.h"
 #include "GenerateStdAfxMaker.h"
+#include "CommonDefs.h"
 
 
 void main(int argc, char* argv[])
@@ -23,16 +24,9 @@ void main(int argc, char* argv[])
     }
 
     path p = argv[1];
-
-    if ( p.extension() != ".sln" && p.extension() != ".vcproj" )
-    {
-        std::cout << "only support .solution, .vcproj." << std::endl;
-        return;
-    }
-
     VisualStudioProjectPtrList projects;
 
-    if ( p.extension() == ".sln" )
+    if ( p.extension() == _sln )
     {
         Solution solution( p );
         const std::vector<path>&  project_paths = solution.get_project_paths();
@@ -43,10 +37,15 @@ void main(int argc, char* argv[])
             projects.push_back( project );
         }
     }
-    else
+    else if ( p.extension() == _vcproj )
     {
         VisualStudioProjectPtr project( new VisualStudioProject( p ) );
         projects.push_back( project );
+    }
+    else
+    {
+        std::cout << "only support " << _sln.string() << ", " << _vcproj.string() << std::endl;
+        return;
     }
 
     VCCLCompilerToolMaker       compile;
@@ -62,8 +61,8 @@ void main(int argc, char* argv[])
         FilesHelperPtr files_helper = project->m_files_helper;
         const std::string& configuration_type = project->m_project_helper->get_configuration_type();
 
-        if ( ( configuration_type != "1" &&  configuration_type != "2" &&  configuration_type != "4" ) || // 1: Application (.exe), 2: Dynamic Library (.dll), 4: Static Library (.lib)
-             ( files_helper->has_file( "StdAfx.h" ) || files_helper->has_file( "StdAfx.cpp" ) ) )
+        if ( ( configuration_type != ct_Application &&  configuration_type != ct_DynamicLibrary &&  configuration_type != ct_StaticLibrary ) ||
+             ( files_helper->has_file( StdAfx_h ) || files_helper->has_file( StdAfx_cpp ) ) )
         {
             continue;
         }
@@ -74,12 +73,12 @@ void main(int argc, char* argv[])
         preferred_path.make_project( project );
         add_include_StdAfx_for_cpp.make_project( project );
 
-        if ( "4" == configuration_type ) // 4: Static Library (.lib)
+        if ( ct_StaticLibrary == configuration_type )
         {
             pre_build.make_project( project );
         }
 
-        if ( "1" == configuration_type || "2" == configuration_type ) // 1: Application (.exe)
+        if ( ct_Application == configuration_type || ct_DynamicLibrary == configuration_type )
         {
             link.make_project( project );
             generate_StdAfx.make_project( project );

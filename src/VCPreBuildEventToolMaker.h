@@ -1,24 +1,21 @@
 #pragma once
 #include "CommonDefs.h"
+#include "ToolMaker.h"
 
 
-class VCPreBuildEventToolMaker
+class VCPreBuildEventToolMaker : ToolMaker
 {
 public:
 
-    void make_project( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug"  );
+    VCPreBuildEventToolMaker()
+        : ToolMaker( "VCPreBuildEventTool" )
+    {
+    }
+
+    virtual void make_project( VisualStudioProjectPtr project, const std::string& configuration_name = "Debug"  );
 
 private:
 
-    void initialize( VisualStudioProjectPtr project, const std::string& configuration_name );
     void make_CommandLine();
-    void remove_vc90_pdb_idb();
-
-public:
-
-    VisualStudioProjectPtr m_project;
-    std::string m_configuration_name;
-    ConfigurationPtr m_configuration;
-    ToolPtr m_tool;
-    OptionListHelperPtr m_tool_options;
+    void remove_vc90_xdb();
 };

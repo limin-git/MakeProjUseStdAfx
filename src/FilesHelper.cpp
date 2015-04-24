@@ -52,9 +52,9 @@ bool FilesHelper::is_exist( const path& extension )
 }
 
 
-bool FilesHelper::has_file( const std::string& file_name )
+bool FilesHelper::has_file( const path& file_name )
 {
-    std::string lhs = boost::to_lower_copy( file_name );
+    std::string lhs = boost::to_lower_copy( file_name.string() );
 
     for ( size_t i = 0; i < m_paths.size(); ++i )
     {
@@ -88,20 +88,16 @@ std::vector<path> FilesHelper::get_paths_by_extension( const path& extension )
 
 std::vector<path> FilesHelper::get_source_code_paths()
 {
-    const char* extensions[] = { ".c", ".cpp", ".cxx", ".cc", ".h", ".hpp", ".hxx", ".hh", ".inl" };
-    size_t cnt = sizeof(extensions) / sizeof(char*);
-
+    const path extension_list[] = { ".c", ".cpp", ".cxx", ".cc", ".h", ".hpp", ".hxx", ".hh", ".inl" };
+    size_t size = sizeof(extension_list) / sizeof(path);
+    std::set<path> extensions( extension_list, extension_list + size );
     std::vector<path> paths;
 
     for ( size_t i = 0; i < m_paths.size(); ++i )
     {
-        for ( size_t j = 0; j < cnt; ++j )
+        if ( extensions.find( m_paths[i].extension() ) != extensions.end() )
         {
-            if ( m_paths[i].extension() == extensions[j] )
-            {
-                paths.push_back( m_paths[i] );
-                break;
-            }
+            paths.push_back( m_paths[i] );
         }
     }
 

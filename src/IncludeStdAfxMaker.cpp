@@ -78,7 +78,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
 
             if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* (\\#include|\\#if|\\#define|namespace) " ) ) )
             {
-                std::cout << "\t" << "cannot add include StdAfx for this file: " << p.string() << std::endl;
+                std::cout << "\t" << "can not add include StdAfx for this file: " << p.string() << std::endl;
                 continue;
             }
 

@@ -48,7 +48,7 @@ void OptionListHelper::modify_option( const std::string& option_name, const std:
 {
     if ( false == is_option_exist( option_name ) )
     {
-        std::cout << "\t" << option_name << " does not exist, cannot modify." << std::endl;
+        std::cout << "\t" << option_name << " does not exist, can not modify." << std::endl;
         return;
     }
 
@@ -67,7 +67,7 @@ void OptionListHelper::insert_option( const std::string& option_name, const std:
 {
     if ( true == is_option_exist( option_name ) )
     {
-        std::cout << "\t" << option_name << " already exist, cannot insert new." << std::endl;
+        std::cout << "\t" << option_name << " already exist, can not insert new." << std::endl;
         return;
     }
 
