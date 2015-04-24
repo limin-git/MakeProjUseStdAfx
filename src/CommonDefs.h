@@ -53,6 +53,7 @@ const path _sln                             = ".sln";
 const path _vcproj                          = ".vcproj";
 const path StdAfx_h                         = "StdAfx.h";
 const path StdAfx_cpp                       = "StdAfx.cpp";
+const path StdAfx_pch                       = "TA_StdAfx.pch";
 #define ct_MakeFile                         "0"
 #define ct_Application                      "1"
 #define ct_DynamicLibrary                   "2"

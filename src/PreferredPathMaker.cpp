@@ -161,6 +161,12 @@ void PreferredPathMaker::make_preferred_path_4_option( OptionListHelperPtr optio
             *p = '\\';
             is_changed = true;
         }
+
+        if ( *p == ',' )
+        {
+            *p = ';';
+            is_changed = true;
+        }
     }
 
     if ( true == is_changed )

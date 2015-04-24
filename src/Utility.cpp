@@ -2,17 +2,37 @@
 #include "Utility.h"
 
 
-std::string Utility::get_string_from_file( const path& file_path )
+std::string Utility::get_string_from_file( const path& p, size_t lines )
 {
-    std::ifstream ifs( file_path.string().c_str() );
+    std::ifstream ifs( p.string().c_str() );
 
     if ( ! ifs )
     {
-        std::cout << "\t" << "can not open file: " << file_path << std::endl;
+        std::cout << "\t" << "can not open file: " << p << std::endl;
         return "";
     }
 
-    return std::string( std::istreambuf_iterator< char >( ifs ), ( std::istreambuf_iterator< char >() ) );
+    if ( 0 == lines)
+    {
+        return std::string( std::istreambuf_iterator< char >( ifs ), ( std::istreambuf_iterator< char >() ) );
+    }
+    else
+    {
+        std::string line;
+        std::stringstream strm;
+
+        while ( lines-- )
+        {
+            if ( ! std::getline( ifs, line ) )
+            {
+                break;
+            }
+
+            strm << line << std::endl;
+        }
+
+        return strm.str();
+    }
 }
 
 
@@ -112,7 +132,7 @@ path Utility::search_parent_relative_path( const path& current_path, const path&
 }
 
 
-path Utility::search_StdAfx_pch_relative_path( const path& current_path, const std::string& configuration_name, const std::string& StdAfx_pch, size_t deepth )
+path Utility::search_StdAfx_pch_relative_path( const path& current_path, const std::string& configuration_name, size_t deepth )
 {
     const path short_paths[] = { "stdafx", "core\\stdafx", "transactive\\core\\stdafx", "code\\transactive\\core\\stdafx" };
     const size_t size = sizeof(short_paths) / sizeof(path);

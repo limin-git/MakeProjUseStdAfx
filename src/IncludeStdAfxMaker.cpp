@@ -53,7 +53,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
             continue;
         }
 
-        std::string str = Utility::get_string_from_file( p.string() );
+        std::string str = Utility::get_string_from_file( p, 100 );
 
         if ( str.empty() )
         {
@@ -66,6 +66,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
             continue;
         }
 
+        str = Utility::get_string_from_file( p );
         size_t pos = std::string::npos;
 
         if ( boost::regex_match( str, boost::regex( "\\s*" ) ) )

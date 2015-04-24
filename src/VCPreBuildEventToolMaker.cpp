@@ -11,7 +11,7 @@
 
 void VCPreBuildEventToolMaker::make_project( VisualStudioProjectPtr project, const std::string& configuration_name )
 {
-    initialize( project, configuration_name );
+    ToolMaker::initialize( project, configuration_name );
 
     if ( ! m_configuration )
     {
@@ -31,15 +31,14 @@ void VCPreBuildEventToolMaker::make_CommandLine()
 {
     const std::string enter_line = "&#x0D;&#x0A;";
     const std::string option_name = "CommandLine";
-    const std::string StdAfx_pch = "TA_StdAfx.pch";
     const std::string& option_value = m_tool_options->get_option_value( option_name );
 
-    if ( option_value.find( StdAfx_pch ) != std::string::npos )
+    if ( boost::regex_search( option_value, boost::regex( "XCOPY /D /Y /F.*?vc90" ) ) )
     {
         return;
     }
 
-    path stdafx_relative_path = Utility::search_StdAfx_pch_relative_path( m_project->m_current_path, m_configuration_name, StdAfx_pch );
+    path stdafx_relative_path = Utility::search_StdAfx_pch_relative_path( m_project->m_current_path, m_configuration_name );
 
     if ( stdafx_relative_path.empty() )
     {

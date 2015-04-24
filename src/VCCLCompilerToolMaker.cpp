@@ -49,7 +49,7 @@ void VCCLCompilerToolMaker::make_PreprocessorDefinitions()
     const std::string option_name = "PreprocessorDefinitions";
     static const char* preprocessors[] =
     {
-        "WIN32", "_DEBUG", "_WINDOWS", "_USE_32BIT_TIME_T", "_AFXDLL", "_AFXEXT", "__WIN32__", "__x86__", "__NT__", "_WIN32_WINNT=0x500", "_CRT_SECURE_NO_DEPRECATE", "__OSVERSION=4"
+        "WIN32", "_DEBUG", "_WINDOWS", "_USE_32BIT_TIME_T", "_AFXDLL", "__WIN32__", "__x86__", "__NT__", "_WIN32_WINNT=0x500", "_CRT_SECURE_NO_DEPRECATE", "__OSVERSION=4"
         //,"_MBCS", "AFX_RESOURCE_DLL", "_USRDLL", "_WINDLL", "_VC80_UPGRADE=0x0600"
     };
     size_t cnt = sizeof(preprocessors) / sizeof(const char*);
@@ -179,19 +179,18 @@ void VCCLCompilerToolMaker::make_AdditionalIncludeDirectories()
 void VCCLCompilerToolMaker::make_PrecompiledHeaderFile()
 {
     const std::string option_name = "PrecompiledHeaderFile";
-    const std::string StdAfx_pch = "TA_StdAfx.pch";
 
     if ( m_tool_options->is_option_exist( option_name ) )
     {
         const std::string& option_value = m_tool_options->get_option_value( option_name );
 
-        if ( option_value.find( StdAfx_pch ) != std::string::npos )
+        if ( option_value.find( StdAfx_pch.string() ) != std::string::npos )
         {
             return;
         }
     }
 
-    path stdafx_relative_path = Utility::search_StdAfx_pch_relative_path( m_project->m_current_path, m_configuration_name, StdAfx_pch );
+    path stdafx_relative_path = Utility::search_StdAfx_pch_relative_path( m_project->m_current_path, m_configuration_name );
 
     if ( stdafx_relative_path.empty() )
     {

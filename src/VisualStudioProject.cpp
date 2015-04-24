@@ -16,7 +16,7 @@ VisualStudioProject::VisualStudioProject( const path& p )
 {
     //std::cout << m_path.string() << std::endl;
     m_current_path = m_path.parent_path();
-    m_str = Utility::get_string_from_file( m_path.string() );
+    m_str = Utility::get_string_from_file( m_path );
 
     const boost::regex e
     (
@@ -48,7 +48,7 @@ VisualStudioProject::VisualStudioProject( const path& p )
     }
     else
     {
-        std::cout << "\t" << "failed to parse .vcproj." << std::endl;
+        std::cout << "\t" << "failed to parse " << m_path << std::endl;
     }
 
     // create helpers
