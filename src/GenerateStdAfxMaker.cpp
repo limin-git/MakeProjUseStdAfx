@@ -151,7 +151,7 @@ void GenerateStdAfxMaker::generate_StdAfx()
     {
         if ( true == m_includes[i].second )
         {
-            strm << "#include <" << m_includes[i].first << ">" << std::endl;
+            strm << "#include <" << m_includes[i].first.string() << ">" << std::endl;
         }
     }
 
@@ -169,9 +169,9 @@ void GenerateStdAfxMaker::generate_StdAfx()
     // 4.3.2 add transactive includes in order of app-bus-core.
     // TODO: add cots
     const char* folders[] = { "\\app\\", "\\bus", "\\core\\" };
-    size_t cnt = sizeof(folders) / sizeof(char*);
+    size_t size = sizeof(folders) / sizeof(char*);
 
-    for ( size_t i = 0; i < cnt; ++i )
+    for ( size_t i = 0; i < size; ++i )
     {
         for ( std::set<path>::iterator it = project_includes.begin(); it != project_includes.end(); ++it )
         {
@@ -230,13 +230,13 @@ void GenerateStdAfxMaker::add_StdAfx_files_to_vcproj()
     std::string& s = m_project->m_files->m_str;
     boost::smatch m;
 
-    if ( ! boost::regex_search( s, m, boost::regex( "(?x) ^ ([\t]+) <Filter \\s+ Name= \" src .+? \\n (\\1) </Filter>" ) ) )
+    if ( ! boost::regex_search( s, m, boost::regex( "(?x) ^ ([\t]+) <Filter \\s+ Name= \" (src|Source[ ]Files) .+? \\n (\\1) </Filter>" ) ) )
     {
         return;
     }
 
     std::string indt = m.str(1);
-    size_t pos = m.position(2);
+    size_t pos = m.position(3);
     std::stringstream strm;
 
     indt += "\t";

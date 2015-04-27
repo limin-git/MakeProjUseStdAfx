@@ -14,6 +14,7 @@ Configuration::Configuration( const std::string& str )
         const boost::regex e
         (
             "(?x)"
+            "^([\t]+)"
             "<Configuration .+? >"
         );
 
@@ -22,6 +23,7 @@ Configuration::Configuration( const std::string& str )
         if ( boost::regex_search( m_str, m, e ) )
         {
             m_options = Utility::extract_options_from_string( m.str() );
+            m_indent = m.str(1);
             //Utility::output_options( std::cout, m_options, "\t\t\t" );
         }
     }
@@ -54,22 +56,18 @@ std::string Configuration::generate_configuration()
         return m_str;
     }
 
-    size_t tabs = 0;
-    while ( m_str[tabs++] == '\t' );
-    std::string indent = std::string( tabs - 1, '\t' );
-    std::string next_indent = indent + '\t';
-
     std::stringstream strm;
-    strm << indent << "<Configuration\n";
-    Utility::output_options( strm, m_options, next_indent );
-    strm << next_indent << ">\n";
 
+    strm << m_indent << "<Configuration\n";
+    Utility::output_options( strm, m_options, m_indent + "\t" );
+    strm << m_indent << "\t>\n";
+    
     for ( size_t i = 0; i < m_tools.size(); ++i )
     {
         strm << m_tools[i]->generate_tool() << std::endl;
     }
 
-    strm << indent << "</Configuration>";
+    strm << m_indent << "</Configuration>";
 
     return strm.str();
 }

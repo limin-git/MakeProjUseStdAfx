@@ -72,7 +72,7 @@ void VCLinkerToolMaker::make_AdditionalLibraryDirectories()
         }
     }
 
-    const bool* is_includes[] = { &is_included_ace, &is_included_boost, &is_included_omniorb };
+    const bool is_includes[] = { is_included_ace, is_included_boost, is_included_omniorb };
     const char* cots_lib_pats[] = { "cots\\ACE\\6_0_4\\ACE_wrappers\\lib", "cots\\boost\\boost_1_39_0\\stage\\lib", "cots\\omniORB\\omniORB_4.1.6\\lib\\x86_win32" };
     const size_t cnt = sizeof(cots_lib_pats) / sizeof(char*);
     std::stringstream option_value_strm;
@@ -84,7 +84,7 @@ void VCLinkerToolMaker::make_AdditionalLibraryDirectories()
 
     for ( size_t i = 0; i < cnt; ++i )
     {
-        if ( false == *is_includes[i] )
+        if ( false == is_includes[i] )
         {
             if ( false == option_value_strm.str().empty() )
             {

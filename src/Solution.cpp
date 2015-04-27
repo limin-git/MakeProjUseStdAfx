@@ -43,12 +43,16 @@ void Solution::extract_projects()
     for ( ; it != end; ++it )
     {
         path project_relative_path = it->str(4);
-        path p = boost::filesystem::system_complete( m_current_path / project_relative_path );
-        //std::cout << "\t" << p.string() << std::endl;
 
-        if ( is_safe( p ) )
+        if ( project_relative_path.extension() == _vcproj )
         {
-            m_projects.push_back( p );
+            path p = boost::filesystem::system_complete( m_current_path / project_relative_path );
+            //std::cout << "\t" << p.string() << std::endl;
+
+            if ( is_safe( p ) )
+            {
+                m_projects.push_back( p );
+            }
         }
     }
 }

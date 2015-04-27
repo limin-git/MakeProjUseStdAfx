@@ -18,4 +18,5 @@ public:
     std::string m_str;
     OptionList m_options;
     ToolPtrList m_tools;
+    std::string m_indent;
 };
