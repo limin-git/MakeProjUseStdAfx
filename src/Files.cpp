@@ -2,6 +2,7 @@
 #include "Files.h"
 #include "Filter.h"
 #include "File.h"
+#include "Utility.h"
 
 
 Files::Files( const std::string& str )
@@ -9,15 +10,13 @@ Files::Files( const std::string& str )
       m_is_changed( false )
 {
     {
-        const boost::regex filter_regex
-        (
+        const char* e =
             "(?x)"
             "^[\t]{2} <Filter\\b .+? >"
             ".+?"
             "^[\t]{2} </Filter>"
-        );
-
-        boost::sregex_iterator it( m_str.begin(), m_str.end(), filter_regex );
+            ;
+        boost::sregex_iterator it( m_str.begin(), m_str.end(), Utility::create_regex(e) );
         boost::sregex_iterator end;
 
         for ( ; it != end; ++it )
@@ -29,15 +28,13 @@ Files::Files( const std::string& str )
     }
 
     {
-        const boost::regex file_regex
-        (
+        const char* e =
             "(?x)"
             "^[\t]{2} <File \\b .+? >"
             ".+?"
             "^[\t]{2} </File>"
-        );
-
-        boost::sregex_iterator it( m_str.begin(), m_str.end(), file_regex );
+            ;
+        boost::sregex_iterator it( m_str.begin(), m_str.end(), Utility::create_regex(e) );
         boost::sregex_iterator end;
 
         for ( ; it != end; ++it )

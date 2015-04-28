@@ -27,12 +27,11 @@ const std::vector<path>& IncludeCollector::collect_from_file( const path& p )
         {
             std::string s = Utility::get_string_from_file( m_path, 200 );
             std::vector<path> paths;
-            const boost::regex e
-            (
+            const char* e =
                 "(?x)"
                 "^ [ \t]* \\#include [ \t]+ [\"<] ([^\"<>]+) [\">]"
-            );
-            boost::sregex_iterator it( s.begin(), s.end(), e );
+                ;
+            boost::sregex_iterator it( s.begin(), s.end(), Utility::create_regex(e) );
             boost::sregex_iterator end;
 
             for ( ; it != end; ++it )

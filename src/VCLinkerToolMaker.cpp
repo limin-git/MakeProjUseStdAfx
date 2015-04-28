@@ -61,7 +61,7 @@ void VCLinkerToolMaker::make_AdditionalLibraryDirectories()
     {
         boost::smatch m;
 
-        if ( boost::regex_search( option_value, m, boost::regex( "(?x) (^|[,;]) ([^,;]+?) \\b cots \\b" ) ) )
+        if ( boost::regex_search( option_value, m, Utility::create_regex( "(?x) (^|[,;]) ([^,;]+?) \\b cots \\b" ) ) )
         {
             cots_relative_path = m.str(2);
         }

@@ -33,7 +33,7 @@ void VCPreBuildEventToolMaker::make_CommandLine()
     const std::string option_name = "CommandLine";
     const std::string& option_value = m_tool_options->get_option_value( option_name );
 
-    if ( boost::regex_search( option_value, boost::regex( "XCOPY /D /Y /F.*?vc90" ) ) )
+    if ( boost::regex_search( option_value, Utility::create_regex( "XCOPY /D /Y /F.*?vc90" ) ) )
     {
         return;
     }

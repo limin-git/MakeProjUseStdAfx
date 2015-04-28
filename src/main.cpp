@@ -5,7 +5,6 @@
 #include "VCPreBuildEventToolMaker.h"
 #include "IncludeStdAfxMaker.h"
 #include "PreferredPathMaker.h"
-#include "RemoveStdAfxMaker.h"
 #include "VCLinkerToolMaker.h"
 #include "ProjectHelper.h"
 #include "FilesHelper.h"

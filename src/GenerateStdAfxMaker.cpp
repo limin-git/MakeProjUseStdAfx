@@ -230,7 +230,7 @@ void GenerateStdAfxMaker::add_StdAfx_files_to_vcproj()
     std::string& s = m_project->m_files->m_str;
     boost::smatch m;
 
-    if ( ! boost::regex_search( s, m, boost::regex( "(?x) ^ ([\t]+) <Filter \\s+ Name= \" (src|Source[ ]Files) .+? \\n (\\1) </Filter>" ) ) )
+    if ( ! boost::regex_search( s, m, Utility::create_regex( "(?x) ^ ([\t]+) <Filter \\s+ Name= \" (src|Source[ ]Files) .+? \\n (\\1) </Filter>" ) ) )
     {
         return;
     }

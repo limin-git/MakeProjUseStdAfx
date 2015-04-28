@@ -67,16 +67,13 @@ bool Utility::write_string_to_file( const std::string& str, const path& file_pat
 OptionList Utility::extract_options_from_string( const std::string& str )
 {
     OptionList options;
-
-    const boost::regex e
-    (
+    const char* e =
         "(?x)"
-        "( \\w+ )"          //name
+        "( \\w+ )"          // $1: name
         " = "
-        "\" ( [^\"]* ) \""  //value
-    );
-
-    boost::sregex_iterator it( str.begin(), str.end(), e );
+        "\" ( [^\"]* ) \""  // $2: value
+        ;
+    boost::sregex_iterator it( str.begin(), str.end(), create_regex(e) );
     boost::sregex_iterator end;
 
     for ( ; it != end; ++it )
@@ -112,10 +109,10 @@ std::ostream& Utility::output_paths( std::ostream& os, std::vector<path>& paths 
 
 path Utility::search_parent_relative_path( const path& current_path, const path& parent_path, size_t deepth )
 {
-    // current: c:\code\transactive\core\corba
-    // parent:  c:\code\cots
-    // return:  ..\..\.., it means c:\code\cots = c:\code\transactive\core\corba\..\..\..\cots
-
+    // Example:
+    //     current: c:\code\transactive\core\corba
+    //     parent:  c:\code\cots
+    //     return:  ..\..\.., it means c:\code\cots = c:\code\transactive\core\corba\..\..\..\cots
     path relative_path;
 
     for ( size_t i = 0; i < deepth; ++i )
@@ -153,4 +150,21 @@ path Utility::search_StdAfx_pch_relative_path( const path& current_path, const s
     }
 
     return path();
+}
+
+
+const boost::regex& Utility::create_regex( const char* s )
+{
+    static boost::mutex s_mutex;
+    static std::map<const char*, boost::regex> s_regex_map;
+
+    boost::lock_guard<boost::mutex> lock(s_mutex);
+    std::map<const char*, boost::regex>::iterator it = s_regex_map.find(s);
+
+    if ( it == s_regex_map.end() )
+    {
+        it = s_regex_map.insert( std::make_pair( s, boost::regex(s) ) ).first;
+    }
+
+    return it->second;
 }

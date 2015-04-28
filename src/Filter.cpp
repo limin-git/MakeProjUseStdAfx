@@ -10,23 +10,23 @@ Filter::Filter( const std::string& str )
     {
         // option
 
-        boost::regex e
-        (
-            "(?x)"
-            "<Filter .+? >"
-        );
         boost::smatch m;
+        const char* e =
+            "(?x)"
+            "(^[\t]+)"
+            "<Filter .+? >"
+            ;
 
-        if ( boost::regex_search( m_str, m, e ) )
+        if ( boost::regex_search( m_str, m, Utility::create_regex(e) ) )
         {
             m_options = Utility::extract_options_from_string( m.str() );
+            m_indent = m.str(1);
             //Utility::output_options( std::cout, m_options );
         }
     }
 
-    // count next level tabs
-    size_t tabs = 0;
-    while ( m_str[tabs++] == '\t' );
+    // next level tabs
+    size_t tabs = m_indent.size() + 1;
 
     {
         std::stringstream filter_regex_strm;

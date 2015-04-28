@@ -14,6 +14,7 @@ public:
 public:
 
     std::string m_str;
+    std::string m_indent;
     OptionList m_options;
     FilterPtrList m_filters;
     FilePtrList m_files;

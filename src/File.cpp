@@ -8,15 +8,13 @@ File::File( const std::string& str )
     : m_str( str )
 {
     {
-        const boost::regex e
-        (
+        boost::smatch m;
+        const char* e =
             "(?x)"
             "<File .+? >"
-        );
+            ;
 
-        boost::smatch m;
-
-        if ( boost::regex_search( m_str, m, e ) )
+        if ( boost::regex_search( m_str, m, Utility::create_regex(e) ) )
         {
             m_options = Utility::extract_options_from_string( m.str() );
             //Utility::output_options( std::cout, m_options, "\t\t\t" );
@@ -24,15 +22,13 @@ File::File( const std::string& str )
     }
 
     {
-        const boost::regex e
-        (
+        const char* e =
             "(?x)"
             "^[\t]+ <FileConfiguration .+? >"
             ".+?"
             "^[\t]+ </FileConfiguration>"
-        );
-
-        boost::sregex_iterator it( m_str.begin(), m_str.end(), e );
+            ;
+        boost::sregex_iterator it( m_str.begin(), m_str.end(), Utility::create_regex(e) );
         boost::sregex_iterator end;
 
         for ( ; it != end; ++it )

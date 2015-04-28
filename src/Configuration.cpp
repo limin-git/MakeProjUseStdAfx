@@ -11,16 +11,14 @@ Configuration::Configuration( const std::string& str )
     {
         // option
 
-        const boost::regex e
-        (
+        boost::smatch m;
+        const char* e =
             "(?x)"
             "^([\t]+)"
             "<Configuration .+? >"
-        );
+            ;
 
-        boost::smatch m;
-
-        if ( boost::regex_search( m_str, m, e ) )
+        if ( boost::regex_search( m_str, m, Utility::create_regex(e) ) )
         {
             m_options = Utility::extract_options_from_string( m.str() );
             m_indent = m.str(1);
@@ -31,13 +29,11 @@ Configuration::Configuration( const std::string& str )
     {
         // Tool
 
-        const boost::regex e
-        (
+        const char* e =
             "(?x)"
             "^[\t]+ <Tool .+? />"
-        );
-
-        boost::sregex_iterator it( m_str.begin(), m_str.end(), e );
+            ;
+        boost::sregex_iterator it( m_str.begin(), m_str.end(), Utility::create_regex(e) );
         boost::sregex_iterator end;
 
         for ( ; it != end; ++it )

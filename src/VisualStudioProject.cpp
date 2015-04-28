@@ -18,8 +18,8 @@ VisualStudioProject::VisualStudioProject( const path& p )
     m_current_path = m_path.parent_path();
     m_str = Utility::get_string_from_file( m_path );
 
-    const boost::regex e
-    (
+    boost::smatch m;
+    const char* e =
         "(?x)"
         "( <\\?xml [ ]+ version .+? > ) \\n"                            // 1: version
         "( <VisualStudioProject .+? > ) \\n"                            // 2: VisualStudioProject
@@ -30,11 +30,9 @@ VisualStudioProject::VisualStudioProject( const path& p )
         "( [ \t]     <Files> .*? </Files> ) \\n"                        // 7: Files
         "( [ \t]     <Globals> .*? </Globals> ) \\n"                    // 8: Globals
         "  </VisualStudioProject> \\s*"
-    );
+        ;
 
-    boost::smatch m;
-
-    if ( boost::regex_match( m_str, m, e ) )
+    if ( boost::regex_match( m_str, m, Utility::create_regex(e) ) )
     {
         m_version = m.str(1);
         m_options = Utility::extract_options_from_string( m.str(2) );

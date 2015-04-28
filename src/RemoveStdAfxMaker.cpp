@@ -2,6 +2,7 @@
 #include "RemoveStdAfxMaker.h"
 #include "VisualStudioProject.h"
 #include "Files.h"
+#include "Utility.h"
 
 
 void RemoveStdAfxMaker::initialize( VisualStudioProjectPtr project )
@@ -29,19 +30,16 @@ void RemoveStdAfxMaker::make_project( VisualStudioProjectPtr project )
 void RemoveStdAfxMaker::remove_stdafx_cpp()
 {
     std::string& s = m_files->m_str;
-
-    boost::regex e
-    (
+    boost::smatch m;
+    const char* e =
         "(?xi)"
         "^[\t]+ <File\\n"
         "^[\t]+     RelativePath=\"[^\"]*? StdAfx\\.(cpp|h)\""
         ".+?"
         "^[\t]+ </File>\\n"
-    );
+        ;
 
-    boost::smatch m;
-
-    while ( boost::regex_search( s, m, e ) )
+    while ( boost::regex_search( s, m, Utility::create_regex(e) ) )
     {
         std::cout << "\t" << "- " << "StdAfx." << m.str(1) << std::endl;
         //std::cout << m.str() << std::endl;

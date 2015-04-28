@@ -61,7 +61,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
         }
 
         // already included
-        if ( boost::regex_search( str, boost::regex( "(?xi) ^[ \t]* \\#include [ \t]+ \" [^\"\\n]*? StdAfx\\.h \"" ) ) )
+        if ( boost::regex_search( str, Utility::create_regex( "(?xi) ^[ \t]* \\#include [ \t]+ \" [^\"\\n]*? StdAfx\\.h \"" ) ) )
         {
             continue;
         }
@@ -69,7 +69,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
         str = Utility::get_string_from_file( p );
         size_t pos = std::string::npos;
 
-        if ( boost::regex_match( str, boost::regex( "\\s*" ) ) )
+        if ( boost::regex_match( str, Utility::create_regex( "\\s*" ) ) )
         {
             pos = 0;
         }
@@ -77,7 +77,7 @@ void IncludeStdAfxMaker::add_include_StdAfx_h()
         {
             boost::smatch m;
 
-            if ( ! boost::regex_search( str, m, boost::regex( "(?x) ^ [ \t]* (\\#include|\\#if|\\#define|namespace) " ) ) )
+            if ( ! boost::regex_search( str, m, Utility::create_regex( "(?x) ^ [ \t]* (\\#include|\\#if|\\#define|namespace) " ) ) )
             {
                 std::cout << "\t" << "can not add include StdAfx for this file: " << p.string() << std::endl;
                 continue;

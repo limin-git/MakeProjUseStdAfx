@@ -1,18 +1,17 @@
 #include "StdAfx.h"
 #include "Configurations.h"
 #include "Configuration.h"
+#include "Utility.h"
 
 
 Configurations::Configurations( const std::string& str )
     : m_str( str )
 {
-    const boost::regex e
-    (
+    const char* e =
         "(?x)"
         "^[\t]+ <Configuration\\b .+? > .+? </Configuration>"
-    );
-
-    boost::sregex_iterator it( m_str.begin(), m_str.end(), e );
+        ;
+    boost::sregex_iterator it( m_str.begin(), m_str.end(), Utility::create_regex(e) );
     boost::sregex_iterator end;
 
     for ( ; it != end; ++it )

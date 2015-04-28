@@ -23,8 +23,7 @@ void Solution::extract_projects()
     }
 
     // extract additional include directories
-    const boost::regex project_regex
-    (
+    const char* e =
         "(?x)"
         "(?<=\\n) ^ [ \\t]*"                            // starts with spaces
         "\\< Project \\> \\s*"
@@ -35,9 +34,8 @@ void Solution::extract_projects()
         " .*? "
         "(?<=\\n) ^ [ \\t]*"                            // starts with spaces
         "\\< EndProject \\>"
-    );
-
-    boost::sregex_iterator it( m_str.begin(), m_str.end(), project_regex );
+        ;
+    boost::sregex_iterator it( m_str.begin(), m_str.end(), Utility::create_regex(e) );
     boost::sregex_iterator end;
 
     for ( ; it != end; ++it )

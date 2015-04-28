@@ -98,7 +98,7 @@ void VCCLCompilerToolMaker::make_AdditionalOptions()
     }
     else
     {
-        option_value = boost::regex_replace( option.second, boost::regex( "/Zm\\d+" ), option_value );
+        option_value = boost::regex_replace( option.second, Utility::create_regex( "/Zm\\d+" ), option_value );
         m_tool_options->modify_option( option_name, option_value );
     }
 }
@@ -138,7 +138,7 @@ void VCCLCompilerToolMaker::make_AdditionalIncludeDirectories()
     {
         boost::smatch m;
 
-        if ( boost::regex_search( option_value, m, boost::regex( "(?x) (^|[,;]) ([^,;]+?) \\b cots \\b" ) ) )
+        if ( boost::regex_search( option_value, m, Utility::create_regex( "(?x) (^|[,;]) ([^,;]+?) \\b cots \\b" ) ) )
         {
             cots_relative_path = m.str(2);
         }
