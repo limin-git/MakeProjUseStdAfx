@@ -16,5 +16,6 @@ public:
 
     VisualStudioProject* m_project;
     std::string m_configuration_name;
+    std::string m_configuration_name_Win32;
     std::vector<path> m_additional_include_directories;
 };

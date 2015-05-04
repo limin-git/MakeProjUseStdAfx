@@ -19,6 +19,7 @@ void GenerateStdAfxMaker::initialize( VisualStudioProjectPtr project, const std:
 {
     m_project = project;
     m_configuration_name = configuration_name;
+    m_configuration_name_Win32 = configuration_name + "|Win32";
 
     if ( m_project )
     {
@@ -246,7 +247,7 @@ void GenerateStdAfxMaker::add_StdAfx_files_to_vcproj()
         << indt << "	RelativePath=\".\\src\\StdAfx.cpp\"\n"
         << indt << "	>\n"
         << indt << "	<FileConfiguration\n"
-        << indt << "		Name=\"" << m_configuration_name << "|Win32\"\n"
+        << indt << "		Name=\"" << m_configuration_name_Win32 << "\"\n"
         << indt << "		>\n"
         << indt << "		<Tool\n"
         << indt << "			Name=\"VCCLCompilerTool\"\n"

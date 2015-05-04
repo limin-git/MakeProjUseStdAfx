@@ -18,6 +18,7 @@ public:
 
     VisualStudioProjectPtr m_project;
     std::string m_configuration_name;
+    std::string m_configuration_name_Win32;
 
     ConfigurationPtr m_configuration;
     OptionListHelperPtr m_configuration_options;

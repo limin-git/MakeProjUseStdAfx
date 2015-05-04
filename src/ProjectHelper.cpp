@@ -14,7 +14,8 @@
 
 ProjectHelper::ProjectHelper( VisualStudioProject* project, const std::string& configuration_name )
     : m_project( project ),
-      m_configuration_name( configuration_name )
+      m_configuration_name( configuration_name ),
+      m_configuration_name_Win32( configuration_name + "|Win32" )
 {
 }
 
@@ -29,7 +30,7 @@ const std::string& ProjectHelper::get_configuration_type()
         {
             OptionListHelper configuration_options( &configurations[i]->m_options );
 
-            if ( configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
+            if ( configuration_options.get_option_value( "Name" ) == m_configuration_name_Win32 )
             {
                 // 0: MakeFile
                 // 1: Application (.exe)
@@ -62,7 +63,7 @@ const std::vector<path>& ProjectHelper::get_additional_include_directories()
         ConfigurationPtr configuration = configurations[i];
         OptionListHelper configuration_options( &configuration->m_options );
 
-        if ( configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
+        if ( configuration_options.get_option_value( "Name" ) == m_configuration_name_Win32 )
         {
             ToolPtrList& tools = configuration->m_tools;
 

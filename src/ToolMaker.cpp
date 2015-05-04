@@ -6,7 +6,6 @@
 #include "Tool.h"
 #include "OptionListHelper.h"
 #include "FilesHelper.h"
-#include "Utility.h"
 
 
 ToolMaker::ToolMaker( const std::string& tool_name )
@@ -19,6 +18,7 @@ void ToolMaker::initialize( VisualStudioProjectPtr project, const std::string& c
 {
     m_project = project;
     m_configuration_name = configuration_name;
+    m_configuration_name_Win32 = configuration_name + "|Win32";
     m_configuration.reset();
     m_tool.reset();
     m_tool_options.reset();
@@ -35,7 +35,7 @@ void ToolMaker::initialize( VisualStudioProjectPtr project, const std::string& c
         ConfigurationPtr configuration = configurations[i];
         OptionListHelper configuration_options( &configuration->m_options );
 
-        if ( configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
+        if ( configuration_options.get_option_value( "Name" ) == m_configuration_name_Win32 )
         {
             ToolPtrList& tools = configuration->m_tools;
 

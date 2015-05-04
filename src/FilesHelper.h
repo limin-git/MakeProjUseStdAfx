@@ -26,4 +26,5 @@ public:
     VisualStudioProject* m_project;
     std::vector<path> m_paths;
     std::string m_configuration_name;
+    std::string m_configuration_name_Win32;
 };

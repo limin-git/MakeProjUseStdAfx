@@ -22,6 +22,7 @@ public:
 
     VisualStudioProjectPtr m_project;
     std::string m_configuration_name;
+    std::string m_configuration_name_Win32;
     FilesHelperPtr m_files_helper;
     std::vector< std::pair<path, bool> > m_includes;
 };

@@ -11,7 +11,8 @@
 
 FilesHelper::FilesHelper( VisualStudioProject* project, const std::string& configuration_name )
     : m_project( project ),
-      m_configuration_name( configuration_name )
+      m_configuration_name( configuration_name ),
+      m_configuration_name_Win32( configuration_name + "|Win32" )
 {
     if ( project != NULL )
     {
@@ -155,7 +156,7 @@ path FilesHelper::get_path_from_file( FilePtr file )
     {
         OptionListHelper file_configuration_options( &file_configurations[i]->m_options );
 
-        if ( file_configuration_options.get_option_value( "Name" ) == m_configuration_name + "|Win32" )
+        if ( file_configuration_options.get_option_value( "Name" ) == m_configuration_name_Win32 )
         {
             if ( file_configuration_options.get_option_value( "ExcludedFromBuild" ) == "true" )
             {
